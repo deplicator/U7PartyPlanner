@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ultima VII - Trainer</title>
+    <link rel="stylesheet" href="default.css">
+    <script src="libs/jquery-2.0.3.min.js"></script>
+    <script src="libs/underscore-1.5.2.min.js"></script>
+    <script src="libs/backbone-1.1.0.min.js"></script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="notfooter"></div>
+        <footer></footer>
+    </div>
+    
+    <script type="text/html" id="partyMemberSelectorView">
+        <div id="choose" class="grid">
+            <label>Choose Party Member:</label>
+            <select>
+                <option value="Avatar" selected>Avatar</option>
+                <option value="Dupre">Dupre</option>
+                <option value="Iolo">Iolo</option>
+                <option value="Jaana">Jaana</option>
+                <option value="Julia">Julia</option>
+                <option value="Katrina">Katrina</option>
+                <option value="Sentri">Sentri</option>
+                <option value="Shamino">Shamino</option>
+                <option value="Spark">Spark</option>
+                <option value="Tseramed">Tseramed</option>
+            </select>
+        </div>
+    </script>
+    
+    <script type="text/html" id="partyMemberView">
+        <div class="inner-view partyMember">
+            <img class="portrait" src="images/<%= character.get("name").toLowerCase() %>.png" alt="<%= character.get("name") %>" />
+            <a title="Reset this character back to start values."><input type="reset" id="reset" /></a>
+            <div class="statbox">
+                <div class="stat">
+                    <label>Strength:</label>
+                    <span class="valueChanger">
+                        <span class="decrement <% if(character.rangeCheck("strength") === "lb"){ %> disabled <% } %>">-</span>
+                        <input type="text" id="strength" value="<%= character.get("strength") %>" />
+                        <span class="increment <% if(character.rangeCheck("strength") === "ub"){ %> disabled <% } %>">+</span>
+                    </span>
+                </div>
+                <div class="stat">
+                    <label>Dexterity:</label>
+                    <span class="valueChanger">
+                        <span class="decrement <% if(character.rangeCheck("dexterity") === "lb"){ %> disabled <% } %>">-</span>
+                        <input type="text" id="dexterity" value="<%= character.get("dexterity") %>" />
+                        <span class="increment <% if(character.rangeCheck("dexterity") === "ub"){ %> disabled <% } %>">+</span>
+                    </span>
+                </div>
+                <div class="stat break">
+                    <label>Intelligence:</label>
+                    <span class="valueChanger">
+                        <span class="decrement <% if(character.rangeCheck("intelligence") === "lb"){ %> disabled <% } %>">-</span>
+                        <input type="text" id="intelligence" value="<%= character.get("intelligence") %>" />
+                        <span class="increment <% if(character.rangeCheck("intelligence") === "ub"){ %> disabled <% } %>">+</span>
+                    </span>
+                </div>
+                <div class="stat">
+                    <label>Combat:</label>
+                    <span class="valueChanger">
+                        <span class="decrement <% if(character.rangeCheck("combat") === "lb"){ %> disabled <% } %>">-</span>
+                        <input type="text" id="combat" value="<%= character.get("combat") %>" />
+                        <span class="increment <% if(character.rangeCheck("combat") === "ub"){ %> disabled <% } %>">+</span>
+                    </span>
+                </div>
+                <div class="stat break">
+                    <label>Magic:</label>
+                    <span class="valueChanger">
+                        <span class="decrement <% if(character.rangeCheck("magic") === "lb"){ %>disabled<% } %>">-</span>
+                        <input type="text" id="magic" value="<%= character.get("magic") %>" />
+                        <span class="increment <% if(character.rangeCheck("magic") === "ub"){ %>disabled<% } %>">+</span>
+                    </span>
+                </div>
+                <div class="stat">
+                    <label>Hits:</label>
+                    <span class="valueChanger">
+                        <span class="decrement disabled">-</span>
+                        <input type="text" id="hits" value="<%= character.get("hits") %>" />
+                        <span class="increment disabled">+</span>
+                    </span>
+                </div>
+                <div class="stat break">
+                    <label>Mana:</label>
+                    <span class="valueChanger">
+                        <span class="decrement disabled">-</span>
+                        <input type="text" id="mana" value="<%= character.get("mana") %>" />
+                        <span class="increment disabled">+</span>
+                    </span>
+                </div>
+                <div class="stat">
+                    <label>Exp:</label>
+                    <span class="valueChanger">
+                        <span class="decrement <% if(character.rangeCheck("exp") === "lb"){ %> disabled <% } %>">-</span>
+                        <input type="text" id="exp" value="<%= character.get("exp") %>" <% if(character.get("level") > 8) { %> style="width: 4.25em;" <% } %> />
+                        <span class="increment <% if(character.rangeCheck("exp") === "ub"){ %> disabled <% } %>">+</span>
+                    </span>
+                </div>
+                <div class="stat">
+                    <label>Level:</label>
+                    <span class="valueChanger">
+                        <span class="decrement <% if(character.rangeCheck("level") === "lb"){ %> disabled <% } %>">-</span>
+                        <input type="text" id="level" value="<%= character.get("level") %>" />
+                        <span class="increment <% if(character.rangeCheck("level") === "ub"){ %> disabled <% } %>">+</span>
+                    </span>
+                </div>
+                <div class="stat">
+                    <label>Training:</label>
+                    <span class="valueChanger">
+                        <span class="decrement <% if(character.rangeCheck("training") === "lb" || character.get("training") === 0){ %> disabled <% } %>">-</span>
+                        <input type="text" id="training" value="<%= character.get("training") %>" />
+                        <span class="increment">+</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </script>
+    
+    <script type="text/html" id="focusView">
+        <div class="inner-view statfocus">
+            <div id="focus">
+                <h3>Training Focus</h3>
+                <div class="focusopt">
+                    <input type="checkbox" value="strength" /><span>Strength</span><span class="mark"></span>
+                    <span class="description">damage per blow, maximum weight, maximum Hits</span>
+                </div>
+                <div class="focusopt">
+                    <input type="checkbox" value="dexterity" /><span>Dexterity</span><span class="mark"></span>
+                    <span class="description">attack speed, battle movement speed, lock picking skill, Combat</span>
+                </div>
+                <div class="focusopt">
+                <input type="checkbox" value="intelligence" /><span>Intelligence</span><span class="mark"></span>
+                    <span class="description">spell casting quality, Magic</span>
+                </div>
+                <div class="focusopt">
+                <input type="checkbox" value="combat" /><span>Combat</span><span class="mark"></span>
+                    <span class="description">hit probability</span>
+                </div>
+                <div class="focusopt">
+                <input type="checkbox" value="magic" /><span>Magic</span><span class="mark"></span>
+                    <span class="description">maximum Mana</span>
+                </div>
+            </div>
+            <input type="button" id="listTrainers" value="Create List of Trainers" />
+        </div>
+    </script>
+    
+    <script type="text/html" id="trainerView">
+        <div id="inner-view">
+            <div id="trainer">
+                <h3>Trainer List</h3>
+                
+            </div>
+            <input type="button"  value="??" />
+        </div>
+    </script>
+    
+    <script src="main.js"></script>
+    <script src="partymembers.js"></script>
+    <script src="trainers.js"></script>
+</body>
+</html>

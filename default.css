@@ -1,0 +1,248 @@
+@font-face {
+    font-family: 'Doppio One';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Doppio One Regular'), local('DoppioOne-Regular'), url(fonts/doppioone.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Cloister Black';
+    src: url(fonts/cloisterblack.ttf);
+}
+
+*, *:after, *:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    background: url(images/u7background.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    font: normal normal 400 1em 'Doppio One', sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.grid {
+    float: left;
+    padding: 1em;
+    width: 100%;
+}
+
+.half {
+    float: left;
+    width: 50%;
+}
+
+.inner-view {
+    background: rgba(0, 0, 0, .6);
+    border-radius: .75em;
+    padding: .75em;
+    position: relative;
+}
+
+#wrapper {
+    background: url(images/u7background-blured.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    height: 100%;
+    margin: 0 auto;
+    max-width: 65em;
+    min-height: 600px;
+    min-width: 55em;
+    width: 80vw;
+}
+
+
+#choose label {
+    color: #EBEB00;
+    font: 2em 'Cloister Black', serif;
+    text-shadow: 0.0625em 0.0625em #000;
+}
+
+#choose select {
+    background: transparent;
+    border: none;
+    color: #EBEB00;
+    font: 2em 'Cloister Black', serif;
+    text-shadow: 0.0625em 0.0625em #000;
+}
+
+#choose option {
+    background: #C0C0C0;
+    color: #222;
+}
+
+#partyMembers .portrait {
+    float: left;
+}
+
+#partyMembers #reset {
+    background: #DE1327;
+    border-top: 2px solid #FE374C;
+    border-right: 2px solid #FE374C;
+    border-bottom: 2px solid #8A030A;
+    border-left: 2px solid #8A030A;
+    box-shadow: 1px 1px 2px #000;
+    clear: left;
+    float: left;
+    margin: 1.125em;
+    outline: none;
+}
+
+#partyMembers #reset:active {
+    background: #DE1327;
+    border-top: 2px solid #8A030A;
+    border-right: 2px solid #8A030A;
+    border-bottom: 2px solid #FE374C;
+    border-left: 2px solid #FE374C;
+    position: relative;
+    left: 1px;
+    top: 1px;
+}
+
+#partyMembers .statbox {
+    background: #754404;
+    border-radius: 0.1875em;
+    font-size: 1.5em;
+    margin: 0 0 0 4em;
+    padding: 0.25em;
+}
+
+#partyMembers .statbox .stat {
+    background: #7D6559;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+    min-height: 1.4em;
+    padding: 0 0.625em;
+    position: relative;
+}
+
+#partyMembers .statbox .stat:first-of-type {
+    border-top: 1px solid #333;
+}
+
+#partyMembers .statbox .stat:last-of-type {
+    border-bottom: 1px solid #333;
+}
+
+#partyMembers .statbox .break {
+    border-bottom: 1px solid #333;
+    margin-bottom: 0.25em;
+}
+
+#partyMembers .statbox .break + .stat  {
+    border-top: 1px solid #333;
+}
+
+#partyMembers .statbox .valueChanger {
+    position: absolute;
+    right: 0.5em;
+    user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        -webkit-user-select: none;
+}
+
+#partyMembers .statbox .valueChanger input {
+    background: inherit;
+    border: none;
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    width: 3em;
+}
+
+#partyMembers .statbox .valueChanger span {
+    cursor: pointer;
+    cursor: hand;
+}
+
+#partyMembers .statbox .valueChanger span:hover {
+    color: #EBEB00;
+}
+
+#partyMembers .statbox .valueChanger .disabled {
+    color: #7D6559;
+}
+
+#partyMembers .statbox .valueChanger .disabled:hover {
+    color: #7D6559;
+    cursor: default;
+}
+
+#train #focus {
+    background: #754404;
+    border-radius: 0.1875em;
+    min-height: 327px;
+    padding: 0.25em;
+}
+
+#train h3 {
+    font-size: 1.4em;
+    margin: 0.25em 0 0.75em 0;
+    padding: 0;
+    text-align: center;
+}
+
+#train #focus .focusopt {
+    background: #7D6559;
+    border: 1px solid #333;
+    border-bottom: none;
+    font-size: 1.25em;
+    padding: 0.125em;
+}
+
+#train #focus .focusopt:last-of-type {
+    border: 1px solid #333;
+}
+
+#train #focus .focusopt .description {
+    display: block;
+    font-size: .75em;
+    margin: 0 0 0 23px;
+}
+
+#train #focus .focusopt .mark {
+    color: #ECE76D;
+    font-size: .65em;
+    margin: 0 .75em;
+}
+
+#train #listTrainers {
+    margin: 17px 0 0 23em;
+}
+
+#train .disabled {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+#notfooter {
+    height: 100%;
+    margin: 0 0 -50px 0;
+    min-height: 600px;
+}
+
+footer {
+    background: rgba(0, 0, 0, 0.6);
+    border-top-left-radius: 0.75em;
+    border-top-right-radius: 0.75em;
+    color: #fefefe;
+    height: 50px;
+    padding: .125em;
+}

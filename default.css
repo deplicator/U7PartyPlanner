@@ -45,13 +45,67 @@ body {
     width: 50%;
 }
 
+.quarter {
+    float: left;
+    width: 50%;
+}
+
 .inner-view {
     background: rgba(0, 0, 0, .6);
     border-radius: .75em;
+    margin-bottom: 1em;
     padding: .75em;
     position: relative;
 }
 
+
+.btn {
+    box-shadow: 1px 1px 2px #000;
+    clear: left;
+    float: left;
+    margin: 1.125em;
+    outline: none;
+    width: 50px;
+}
+
+/** Default Buttons **/
+.btn:active {
+    position: relative;
+    left: 1px;
+    top: 1px;
+}
+
+.btn-red {
+    background: #DE1327;
+    border-top: 2px solid #FE374C;
+    border-right: 2px solid #FE374C;
+    border-bottom: 2px solid #8A030A;
+    border-left: 2px solid #8A030A;
+}
+
+.btn-red:active {
+    border-top: 2px solid #8A030A;
+    border-right: 2px solid #8A030A;
+    border-bottom: 2px solid #FE374C;
+    border-left: 2px solid #FE374C;
+}
+
+.btn-green {
+    background: #13DE13;
+    border-top: 2px solid #37FE3F;
+    border-right: 2px solid #37FE3F;
+    border-bottom: 2px solid #038A13;
+    border-left: 2px solid #038A13;
+}
+
+.btn-green:active {
+    border-top: 2px solid #038A13;
+    border-right: 2px solid #038A13;
+    border-bottom: 2px solid #37FE3F;
+    border-left: 2px solid #37FE3F;
+}
+
+/** Specific Elements **/
 #wrapper {
     background: url(images/u7background-blured.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
@@ -66,14 +120,17 @@ body {
     width: 80vw;
 }
 
+#memberChooser {
+    text-align: center;
+}
 
-#choose label {
+#memberChooser label {
     color: #EBEB00;
     font: 2em 'Cloister Black', serif;
     text-shadow: 0.0625em 0.0625em #000;
 }
 
-#choose select {
+#memberChooser select {
     background: transparent;
     border: none;
     color: #EBEB00;
@@ -81,40 +138,17 @@ body {
     text-shadow: 0.0625em 0.0625em #000;
 }
 
-#choose option {
+#memberChooser option {
     background: #C0C0C0;
     color: #222;
 }
 
-#partyMembers .portrait {
+#member .portrait {
     float: left;
+    width: 5.25em;
 }
 
-#partyMembers #reset {
-    background: #DE1327;
-    border-top: 2px solid #FE374C;
-    border-right: 2px solid #FE374C;
-    border-bottom: 2px solid #8A030A;
-    border-left: 2px solid #8A030A;
-    box-shadow: 1px 1px 2px #000;
-    clear: left;
-    float: left;
-    margin: 1.125em;
-    outline: none;
-}
-
-#partyMembers #reset:active {
-    background: #DE1327;
-    border-top: 2px solid #8A030A;
-    border-right: 2px solid #8A030A;
-    border-bottom: 2px solid #FE374C;
-    border-left: 2px solid #FE374C;
-    position: relative;
-    left: 1px;
-    top: 1px;
-}
-
-#partyMembers .statbox {
+#member .statbox {
     background: #754404;
     border-radius: 0.1875em;
     font-size: 1.5em;
@@ -122,7 +156,7 @@ body {
     padding: 0.25em;
 }
 
-#partyMembers .statbox .stat {
+#member .statbox .stat {
     background: #7D6559;
     border-left: 1px solid #333;
     border-right: 1px solid #333;
@@ -131,24 +165,24 @@ body {
     position: relative;
 }
 
-#partyMembers .statbox .stat:first-of-type {
+#member .statbox .stat:first-of-type {
     border-top: 1px solid #333;
 }
 
-#partyMembers .statbox .stat:last-of-type {
+#member .statbox .stat:last-of-type {
     border-bottom: 1px solid #333;
 }
 
-#partyMembers .statbox .break {
+#member .statbox .break {
     border-bottom: 1px solid #333;
     margin-bottom: 0.25em;
 }
 
-#partyMembers .statbox .break + .stat  {
+#member .statbox .break + .stat  {
     border-top: 1px solid #333;
 }
 
-#partyMembers .statbox .valueChanger {
+#member .statbox .valueChanger {
     position: absolute;
     right: 0.5em;
     user-select: none;
@@ -158,7 +192,7 @@ body {
         -webkit-user-select: none;
 }
 
-#partyMembers .statbox .valueChanger input {
+#member .statbox .valueChanger input {
     background: inherit;
     border: none;
     font: inherit;
@@ -168,39 +202,45 @@ body {
     width: 3em;
 }
 
-#partyMembers .statbox .valueChanger span {
+#member .statbox .valueChanger span {
     cursor: pointer;
     cursor: hand;
 }
 
-#partyMembers .statbox .valueChanger span:hover {
+#member .statbox .valueChanger span:hover {
     color: #EBEB00;
 }
 
-#partyMembers .statbox .valueChanger .disabled {
+#member .statbox .valueChanger .disabled {
     color: #7D6559;
 }
 
-#partyMembers .statbox .valueChanger .disabled:hover {
+#member .statbox .valueChanger .disabled:hover {
     color: #7D6559;
     cursor: default;
 }
 
-#train #focus {
+#memberList img {
+    border: 1px solid white;
+}
+
+
+
+#trainerAutoSelect #focus {
     background: #754404;
     border-radius: 0.1875em;
     min-height: 327px;
     padding: 0.25em;
 }
 
-#train h3 {
+#trainerAutoSelect h3 {
     font-size: 1.4em;
     margin: 0.25em 0 0.75em 0;
     padding: 0;
     text-align: center;
 }
 
-#train #focus .focusopt {
+#trainerAutoSelect #focus .focusopt {
     background: #7D6559;
     border: 1px solid #333;
     border-bottom: none;
@@ -208,34 +248,34 @@ body {
     padding: 0.125em;
 }
 
-#train #focus .focusopt:last-of-type {
+#trainerAutoSelect #focus .focusopt:last-of-type {
     border: 1px solid #333;
 }
 
-#train #focus .focusopt .description {
+#trainerAutoSelect #focus .focusopt .description {
     display: block;
     font-size: .75em;
     margin: 0 0 0 23px;
 }
 
-#train #focus .focusopt .mark {
+#trainerAutoSelect #focus .focusopt .mark {
     color: #ECE76D;
     font-size: .65em;
     margin: 0 .75em;
 }
 
-#train #listTrainers {
+#trainerAutoSelect #listTrainers {
     margin: 17px 0 0 23em;
 }
 
-#train .disabled {
+#trainerAutoSelect .disabled {
     color: rgba(0, 0, 0, 0.5);
 }
 
 #notfooter {
     height: 100%;
     margin: 0 0 -50px 0;
-    min-height: 600px;
+    min-height: 630px;
 }
 
 footer {

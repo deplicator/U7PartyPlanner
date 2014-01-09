@@ -13,8 +13,8 @@
         <footer></footer>
     </div>
     
-    <script type="text/html" id="partyMemberSelectorView">
-        <div id="choose" class="grid">
+    <script type="text/html" id="memberChooser-view">
+        <div class="inner-view">
             <label>Choose Party Member:</label>
             <select>
                 <option value="Avatar" selected>Avatar</option>
@@ -31,10 +31,11 @@
         </div>
     </script>
     
-    <script type="text/html" id="partyMemberView">
+    <script type="text/html" id="member-view">
         <div class="inner-view partyMember">
             <img class="portrait" src="images/<%= character.get("name").toLowerCase() %>.png" alt="<%= character.get("name") %>" />
-            <a title="Reset this character back to start values."><input type="reset" id="reset" /></a>
+            <a title="Reset this character back to start values."><input type="reset" id="reset" class="btn btn-red" /></a>
+            <a title="Add this party member to training list."><input type="button" id="add" class="btn btn-green" value="Add" /></a>
             <div class="statbox">
                 <div class="stat">
                     <label>Strength:</label>
@@ -120,7 +121,13 @@
         </div>
     </script>
     
-    <script type="text/html" id="focusView">
+    <script type="text/html" id="memberList-view">
+        <div class="inner-view partyMember">
+            <img src="images/avatar-shape.png" />
+        </div>
+    </script>
+    
+    <script type="text/html" id="trainerAutoSelect-view">
         <div class="inner-view statfocus">
             <div id="focus">
                 <h3>Training Focus</h3>
@@ -149,16 +156,24 @@
         </div>
     </script>
     
-    <script type="text/html" id="trainerView">
-        <div id="inner-view">
-            <div id="trainer">
-                <h3>Trainer List</h3>
-                
-            </div>
-            <input type="button"  value="??" />
+    <script type="text/html" id="trainerManualSelect-view">
+        <div class="inner-view">
+            something
         </div>
     </script>
     
+    <script type="text/html" id="trainerList-view">
+        <div class="inner-view">
+            something
+        </div>
+    </script>
+    
+    <script type="text/html" id="map-view">
+        <div class="inner-view">
+            something
+        </div>
+    </script>
+        
     <script src="main.js"></script>
     <script src="partymembers.js"></script>
     <script src="trainers.js"></script>

@@ -208,6 +208,10 @@ var PartyMember = Backbone.Model.extend({
     }
 });
 
+var Party = Backbone.Collection.extend({
+    model: PartyMember
+});
+
 /* 
  * Trainer NPC model.
  */
@@ -245,82 +249,94 @@ var Trainer = Backbone.Model.extend({
  * http://stackoverflow.com/questions/9271507/how-to-render-and-append-sub-views-in-backbone-js.
  */
 var ParentView = Backbone.View.extend({
+    el: $('#notfooter'),
     initialize: function() {
         this.$el.append('<div id="memberView" class="grid half"></div>')
         this.$el.append('<div id="trainView" class="grid half"></div>')
-
-        //Child views
         this.partyViewer = new PartyView();
         this.trainViewer = new TrainView();
+        this.currentParty = new Party();
+        this.listenTo(this.partyViewer.memberChooser, "memberChange", this.memberChange);
+        this.listenTo(this.partyViewer.member, "memberAdd", this.memberAdd);
     },
     render: function() {
-        this.$el.append(this.partyViewer.$el);
         this.partyViewer.render();
-        
-        this.$el.append(this.trainViewer.$el);
         this.trainViewer.render();
-        
         return this;
     },
     events: {
-        'click #choose': 'changePartyMember',
-        'click #listTrainers': 'swap'
+
     },
-    el: $('#notfooter'),
-    changePartyMember: function() {
-        var who = $('#choose select option:selected').val();
-        this.partyMember.undelegateEvents();
-        this.train.undelegateEvents();
-        this.partyMember = new PartyMemberView({model: window[who]});
-        this.train = new FocusView({model: window[who]});
+    memberChange: function(name) {
+        this.partyViewer.member.undelegateEvents();
+        //this.trainViewer.trainerAutoSelect.undelegateEvents();
+        this.partyViewer.member = new MemberView({model: window[name]});
+        //this.trainViewer.trainerAutoSelect = new TrainerAutoSelectView({model: window[name]});
+        this.partyViewer.member.render();
     },
-    swap: function() {
-        train.remove();
-        somethingelse = new TrainersView({model: this.model});
+    memberAdd: function() {
+        //Add isn't working as expected. Doesn't work after a member change.
+        console.log('member add');
+        this.currentParty.add(this.partyViewer.member.model, {merge: true});
     }
 });
 
 // Party view is a parent view for all party related views.
 var PartyView = Backbone.View.extend({
+    el: '#memberView',
     initialize: function() {
+        // Add elements for child views.
+        this.$el.append('<div id="memberChooser"></div>');
+        this.$el.append('<div id="member"></div>');
+        this.$el.append('<div id="memberList" class=""></div>');
+        
+        // Instantiate new child views.
         this.memberChooser = new MemberChooserView();
-        
-        this.member = new MemberView({
-            model: Avatar
-        });
-        
+        this.member = new MemberView({model: Avatar});
         this.memberList = new MemberListView();
     },
     render: function() {
-        this.$el.append('<li>test</li>');
-    },
-    el: '#memberView'
+        this.memberChooser.render();
+        this.member.render();
+        this.memberList.render();
+    }
 });
 
-
 var MemberChooserView = Backbone.View.extend({
-
+    el: '#memberChooser',
+    render: function() {
+        var template = _.template($("#memberChooser-view").html());
+        this.$el.html(template);
+    },
+    events: {
+        'change': 'triggerMemberChange',
+    },
+    triggerMemberChange: function(evt) {
+        this.trigger("memberChange", evt.target.value);
+    }
 });
 
 /*
- * Party Member view
+ * Member view
  */
 var MemberView = Backbone.View.extend({
-    events: {
-        'change input': 'changed',
-        'click .increment': 'crement',
-        'click .decrement': 'crement',
-        'click #reset': 'reset'
-    },
+    el: "#member",
     initialize: function(){
         this.listenTo(this.model, 'change', this.render);
         //_.bindAll(this, 'changed');
     },
     render: function(){
-        var template = _.template($("#partyMemberView").html(), {character: this.model});
+        var template = _.template($("#member-view").html(), {character: this.model});
         this.$el.html(template);
     },
-    el: $("#partyMembers"),
+    events: {
+        'change input': 'changed',
+        'click .increment': 'crement',
+        'click .decrement': 'crement',
+        'click #add': 'add',
+        'click #reset': 'reset'
+    },
+    
     changed: function(evt) {
         var value = parseInt($(evt.currentTarget).val(), 10);
         this.model.set($(evt.currentTarget).attr('id'), value);
@@ -350,65 +366,73 @@ var MemberView = Backbone.View.extend({
             this.model.rangeCheck();
         }
     },
+    add: function() {
+        console.log('test');
+        this.trigger("memberAdd");
+    },
     reset: function() {
         this.model.reset();
     }
 });
 
 var MemberListView = Backbone.View.extend({
+    el: "#memberList",
+    initialize: function() {
 
+    },
+    render: function(){
+        var template = _.template($("#memberList-view").html());
+        this.$el.html(template);
+    }
 });
 
+
+// Train view is a parent view for all training related views.
 var TrainView = Backbone.View.extend({
+    el: '#trainView',
     initialize: function() {
-        //create trainer models
+        // Create trainer models from static data.
         trainers = [];
         for(i = 0; i < 18; i++) {
             trainers[i] = new Trainer(trainerData[i]);
         };
+        
+        // Add elements for child views.
+        this.$el.append('<div id="trainerAutoSelect"></div>');
+        this.$el.append('<div id="trainerManualSelect"></div>');
+        this.$el.append('<div id="trainerList"></div>');
+        this.$el.append('<div id="map"></div>');
+        
+        // Instantiate new child views.
+        this.trainerAutoSelect = new TrainerAutoSelectView({model: Avatar});
+        this.trainerManualSelect = new TrainerManualSelectView();
+        this.trainerList = new TrainerListView();
+        this.map = new MapView();
     },
     render: function() {
-        this.$el.append('<li>another test</li>');
-    },
-    el: '#trainView'
-});
-
-/*
- * Switch view.
- */
-var SwitchViews = Backbone.View.extend({
-    events: {
-        "click .switchView": "click"
-    },
-    click: function(e) {
-        this.trigger("swaping", e.target.id);
-    },
-    render: function() {
-        this.$el.append('<a href="#" class="switchView" id="view1">1</a>');
-        this.$el.append('<a href="#" class="switchView" id="view2">2</a>');
-        this.$el.append('<a href="#" class="switchView" id="view3">3</a>');
-        return this;
+        //this.trainerAutoSelect.render();
+        this.trainerManualSelect.render();
+        this.trainerList.render();
+        this.map.render();
     }
-});
- 
+}); 
  
 /*
- * Choose focus view.
+ * Auto Select view.
  */
-var FocusView = Backbone.View.extend({
+var TrainerAutoSelectView = Backbone.View.extend({
+    el: "#trainerAutoSelect",
+    initialize: function(){
+        //_.bindAll(this, "toggle"); <-something wrong here.
+    },
+    render: function(){
+        var template = _.template($("#trainerAutoSelect-view").html(), {character: this.model});
+        this.$el.html(template);
+    },
     events: {
         'click #listTrainers': 'listTrainers',
         'click .focusopt input[type=checkbox]': 'checkboxes'
     },
-    initialize: function(){
-        //_.bindAll(this, "toggle"); <-something wrong here.
-        this.render();
-    },
-    render: function(){
-        var template = _.template($("#focusView").html(), {character: this.model});
-        this.$el.html(template);
-    },
-    el: $("#train"),
     listTrainers: function() {
         primaryAttribute = this.model.get('focus');
         secondaryAttribute = this.model.previous('focus');
@@ -458,20 +482,48 @@ var FocusView = Backbone.View.extend({
     }
 });
 
-/* 
- * Trainers view.
+/*
+ * Manual Select view.
  */
-var TrainersView = Backbone.View.extend({
+var TrainerManualSelectView = Backbone.View.extend({
+    el: "#trainerManualSelect",
     initialize: function(){
-        console.log('trainersView');
-        this.render();
+        
     },
     render: function(){
-        var template = _.template($("#trainerView").html());
+        var template = _.template($("#trainerManualSelect-view").html());
         this.$el.html(template);
     },
-    el: $("#train")
 });
+
+/*
+ * Trainer List view.
+ */
+var TrainerListView = Backbone.View.extend({
+    el: "#trainerList",
+    initialize: function(){
+        
+    },
+    render: function(){
+        var template = _.template($("#trainerList-view").html());
+        this.$el.html(template);
+    },
+});
+
+/*
+ * Map view.
+ */
+var MapView = Backbone.View.extend({
+    el: "#map",
+    initialize: function(){
+        
+    },
+    render: function(){
+        var template = _.template($("#map-view").html());
+        this.$el.html(template);
+    },
+});
+
 
 
 

@@ -1,6 +1,4 @@
-/* 
- * Party Member model.
- */
+// Party Member model.
 var PartyMember = Backbone.Model.extend({
     initialize: function() {
         this.calcHits();
@@ -15,7 +13,8 @@ var PartyMember = Backbone.Model.extend({
     },
     defaults: {
         magic: 0,
-        mana: 0
+        mana: 0,
+        trainedWithList: {}
     },
     calcLevel: function(base) {
         if(base == 'exp') {
@@ -161,21 +160,23 @@ var PartyMember = Backbone.Model.extend({
             var current = this.attributes;
             for(i = 0; i < keyslen; i++) {
                 key = keys[i];
-                if(current[key] < original[key]) {
+                if(current[key] < original[key] && key !== 'training') {
                     this.set(key, original[key]);
                 } else {
-                    if ((key != 'exp' && key != 'training' && key != 'level') && current[key] > 30) {
+                    if ((key != 'exp' && key != 'level') && current[key] > 30) {
                         this.set(key, 30);
                     } else if (key == 'level' && current[key] >= 16) {
                         this.set(key, 16);
+                    } else if (key === 'training' && current[key] <= 0) {
+                        this.set(key, 0);
                     }
                 }
             }
         } else {
-            if(this.get(attribute) == this.initialStats[attribute]) {
+            if(this.get(attribute) == this.initialStats[attribute] && attribute !== 'training') {
                 return 'lb';
             } else {
-                if(attribute != 'exp' && attribute != 'level' && attribute != 'training' && this.get(attribute) == 30) {
+                if(attribute != 'exp' && attribute != 'level' && this.get(attribute) == 30) {
                     return 'ub';
                 } else if(attribute == 'level' && this.get(attribute) == 16) { 
                     return 'ub';
@@ -196,15 +197,20 @@ var PartyMember = Backbone.Model.extend({
         }
         this.set('training', original['training']);
     },
-    listTrainers: function(attribute) {
-        tp = this.get('training');
-        whos = [];
-        for(i = 0; i < 18; i++) {
-            if(trainers[i].get(attribute) > 0 && trainers[i].get('train') <= tp) {
-                whos.push(trainers[i]);
-            }
+    addToTrainedWithList: function(name) {
+        console.log(name);
+        var trainedWithListObj = this.get('trainedWithList');
+        if(trainedWithListObj[name]) {
+            var howmanytimes = trainedWithListObj[name];
+            trainedWithListObj[name] = howmanytimes + 1;
+        } else {
+            trainedWithListObj[name] = 1;
         }
-        return whos;
+        this.set('trainedWithList', trainedWithListObj);
+    },
+    removeFromTrainedWithList: function(name) {
+        
+        this.get('trainedWithList');
     }
 });
 
@@ -212,9 +218,7 @@ var Party = Backbone.Collection.extend({
     model: PartyMember
 });
 
-/* 
- * Trainer NPC model.
- */
+// Trainer NPC model.
 var Trainer = Backbone.Model.extend({
     initialize: function() {
         this.calcValue();
@@ -228,80 +232,99 @@ var Trainer = Backbone.Model.extend({
     }
 });
 
+var Trainers = Backbone.Collection.extend({
+    initialize: function() {
+        
+    },
+    model: Trainer
+});
+
 
 /* 
  * Parent view creates and renders two main views, party and train.
  * 
  * ParentView
- * |
- * |-PartyView
- * | |-MemberChooserView
- * | |-MemberView
- * | |-MemberListView
- * |
- * |-TrainView
- * | |-TrainerAutoSelectView
- * | |-TrainerManualSelectView
- * | |-TrainerListView
- * | |-MapView
+ * |-MemberChooserView
+ * |-MemberView
+ * |-MemberListView
+ * |-TrainerAutoSelectView
+ * |-TrainerManualSelectView
+ * |-TrainerListView
+ * |-MapView
  *
  * Interesting discussion on where to render views: 
  * http://stackoverflow.com/questions/9271507/how-to-render-and-append-sub-views-in-backbone-js.
  */
 var ParentView = Backbone.View.extend({
-    el: $('#notfooter'),
+    el: '#notfooter',
     initialize: function() {
-        this.$el.append('<div id="memberView" class="grid half"></div>')
-        this.$el.append('<div id="trainView" class="grid half"></div>')
-        this.partyViewer = new PartyView();
-        this.trainViewer = new TrainView();
-        this.currentParty = new Party();
-        this.listenTo(this.partyViewer.memberChooser, "memberChange", this.memberChange);
-        this.listenTo(this.partyViewer.member, "memberAdd", this.memberAdd);
-    },
-    render: function() {
-        this.partyViewer.render();
-        this.trainViewer.render();
-        return this;
-    },
-    events: {
-
-    },
-    memberChange: function(name) {
-        this.partyViewer.member.undelegateEvents();
-        //this.trainViewer.trainerAutoSelect.undelegateEvents();
-        this.partyViewer.member = new MemberView({model: window[name]});
-        //this.trainViewer.trainerAutoSelect = new TrainerAutoSelectView({model: window[name]});
-        this.partyViewer.member.render();
-    },
-    memberAdd: function() {
-        //Add isn't working as expected. Doesn't work after a member change.
-        console.log('member add');
-        this.currentParty.add(this.partyViewer.member.model, {merge: true});
-    }
-});
-
-// Party view is a parent view for all party related views.
-var PartyView = Backbone.View.extend({
-    el: '#memberView',
-    initialize: function() {
-        // Add elements for child views.
-        this.$el.append('<div id="memberChooser"></div>');
-        this.$el.append('<div id="member"></div>');
-        this.$el.append('<div id="memberList" class=""></div>');
         
-        // Instantiate new child views.
+        // Views
         this.memberChooser = new MemberChooserView();
         this.member = new MemberView({model: Avatar});
         this.memberList = new MemberListView();
+        //this.trainerAutoSelect = new TrainerAutoSelectView({model: Avatar});
+        this.trainerSelect = new TrainerSelectView();
+        this.trainerList = new TrainerListView();
+        this.map = new MapView();
+
+        // Listeners
+        this.listenTo(this.memberChooser, "memberChange", this.memberChange);
+        this.listenTo(this.trainerSelect, "trainWith", this.trainWith);
     },
     render: function() {
         this.memberChooser.render();
         this.member.render();
         this.memberList.render();
+        this.trainerSelect.render();
+        this.trainerList.render();
+        this.map.render();
+        return this;
+    },
+    memberChange: function(name) {
+        this.member.undelegateEvents();
+        this.member = new MemberView({model: window[name]});
+        this.member.render();
+    },
+    trainWith: function(data) {
+        console.log(data);
+        var self = this;
+        
+        //kludge way) to get trainer data
+        for(i = 0; i < 18; i++) {
+            if(trainerData[i]['name'] === data[0]) {
+                who = trainerData[i];
+            }
+        }
+        
+        if(data[1] === 0) { //left mouse click
+            if(self.member.model.get('training') >= who.train) {
+                self.member.model.set('training', self.member.model.get('training') - who['train']);
+                var attributes = _.keys(who);
+                _.each(attributes, function(attribute) {
+                    if(!isNaN(self.member.model.get(attribute))) {
+                        if(attribute != 'combat') { //only dealing with combat rubber band effect for now.
+                            self.member.model.set(attribute, self.member.model.get(attribute) + who[attribute]);
+                        } else if(who[attribute] != 0) {
+                            var high = Math.max(self.member.model.get('dexterity'), self.member.model.get('combat'));
+                            var low = Math.min(self.member.model.get('dexterity'), self.member.model.get('combat'));
+                            var rubberband = Math.ceil((high -  low) / 2);
+                            if(rubberband === 0) { rubberband = 1; }
+                            self.member.model.set('combat', self.member.model.get('combat') + rubberband);
+                        }
+                    }
+                });
+                self.member.model.addToTrainedWithList(who.name);
+            } else {
+                console.log('not enought points');
+            }
+        } else if(data[1] === 2) { //right mouse click
+            console.log('untrain');
+        }
     }
 });
 
+//Member selector
 var MemberChooserView = Backbone.View.extend({
     el: '#memberChooser',
     render: function() {
@@ -316,9 +339,7 @@ var MemberChooserView = Backbone.View.extend({
     }
 });
 
-/*
- * Member view
- */
+// Member view
 var MemberView = Backbone.View.extend({
     el: "#member",
     initialize: function(){
@@ -366,15 +387,12 @@ var MemberView = Backbone.View.extend({
             this.model.rangeCheck();
         }
     },
-    add: function() {
-        console.log('test');
-        this.trigger("memberAdd");
-    },
     reset: function() {
         this.model.reset();
     }
 });
 
+// Member List
 var MemberListView = Backbone.View.extend({
     el: "#memberList",
     initialize: function() {
@@ -385,120 +403,33 @@ var MemberListView = Backbone.View.extend({
         this.$el.html(template);
     }
 });
-
-
-// Train view is a parent view for all training related views.
-var TrainView = Backbone.View.extend({
-    el: '#trainView',
-    initialize: function() {
-        // Create trainer models from static data.
-        trainers = [];
-        for(i = 0; i < 18; i++) {
-            trainers[i] = new Trainer(trainerData[i]);
-        };
-        
-        // Add elements for child views.
-        this.$el.append('<div id="trainerAutoSelect"></div>');
-        this.$el.append('<div id="trainerManualSelect"></div>');
-        this.$el.append('<div id="trainerList"></div>');
-        this.$el.append('<div id="map"></div>');
-        
-        // Instantiate new child views.
-        this.trainerAutoSelect = new TrainerAutoSelectView({model: Avatar});
-        this.trainerManualSelect = new TrainerManualSelectView();
-        this.trainerList = new TrainerListView();
-        this.map = new MapView();
-    },
-    render: function() {
-        //this.trainerAutoSelect.render();
-        this.trainerManualSelect.render();
-        this.trainerList.render();
-        this.map.render();
-    }
-}); 
  
-/*
- * Auto Select view.
- */
-var TrainerAutoSelectView = Backbone.View.extend({
-    el: "#trainerAutoSelect",
+
+
+// Trainer Select view.
+var TrainerSelectView = Backbone.View.extend({
+    el: "#trainerSelect",
     initialize: function(){
-        //_.bindAll(this, "toggle"); <-something wrong here.
+        this.trainers = new Trainers();
+        for(i = 0; i < 18; i++) {
+            this.trainers.add(new Trainer(trainerData[i]));
+        };
     },
     render: function(){
-        var template = _.template($("#trainerAutoSelect-view").html(), {character: this.model});
+        var template = _.template($("#trainerSelect-view").html(), { trainers: this.trainers.toJSON() });
         this.$el.html(template);
     },
     events: {
-        'click #listTrainers': 'listTrainers',
-        'click .focusopt input[type=checkbox]': 'checkboxes'
+        'mousedown tr': 'triggerTrainWith'
     },
-    listTrainers: function() {
-        primaryAttribute = this.model.get('focus');
-        secondaryAttribute = this.model.previous('focus');
-        
-        primaryTrainers = this.model.listTrainers(primaryAttribute);
-        secondaryTrainers = this.model.listTrainers(secondaryAttribute);
-        
-        primaryTrainers = _.chain(primaryTrainers).sortBy(function(trainer) {
-            return trainer.get('cost');
-        }).sortBy(function(trainer) {
-            return trainer.get('train');
-        }).sortBy(function(trainer) {
-            return -trainer.get(primaryAttribute);
-        }).value();
-        
-        secondaryTrainers = _.chain(secondaryTrainers).sortBy(function(trainer) {
-            return trainer.cost;
-        }).sortBy(function(trainer) {
-            return trainer.train;
-        }).sortBy(function(trainer) {
-            return -trainer[secondaryAttribute];
-        }).value();
-        this.remove();
-    },
-    checkboxes: function(evt) {
-        this.model.set('focus', $(evt.currentTarget).val());
-        var focus = this.model.get('focus');
-        var prefocus = this.model.previous('focus');
-        
-        $('.focusopt input').each(function() {
-            if($(this).val() === focus) {
-                $(this).prop('checked', true);
-                $(this).siblings('.mark').html('primary');
-            } else if($(this).val() === prefocus) {
-                $(this).prop('checked', true);
-                $(this).siblings('.mark').html('secondary');
-            } else {
-                $(this).siblings('.mark').html('');
-                $(this).prop('checked', false);
-            }
-        });
-    },
-    remove: function() {
-        $(this.el).empty().detach();
-        $('#notfooter').append('<div id="train" class="grid half"></div>');
-        return this;
+    triggerTrainWith: function(evt) {
+        this.trigger("trainWith", [$(evt.target).parent().attr('id'), evt.button]);
     }
 });
 
-/*
- * Manual Select view.
- */
-var TrainerManualSelectView = Backbone.View.extend({
-    el: "#trainerManualSelect",
-    initialize: function(){
-        
-    },
-    render: function(){
-        var template = _.template($("#trainerManualSelect-view").html());
-        this.$el.html(template);
-    },
-});
 
-/*
- * Trainer List view.
- */
+
+// Trainer List view.
 var TrainerListView = Backbone.View.extend({
     el: "#trainerList",
     initialize: function(){
@@ -510,9 +441,7 @@ var TrainerListView = Backbone.View.extend({
     },
 });
 
-/*
- * Map view.
- */
+// Map view.
 var MapView = Backbone.View.extend({
     el: "#map",
     initialize: function(){
@@ -528,29 +457,10 @@ var MapView = Backbone.View.extend({
 
 
 $(document).ready(function() {
-    
+    document.oncontextmenu = function() {return false;};
     app = new ParentView();
     app.render();
-    
-    /*
-    trainers = [];
-    for(i = 0; i < 18; i++) {
-        trainers[i] = new Trainer(trainerData[i]);
-    };
-    
-    //Initial view on page load.
-    character = new PartyMemberView({model: Avatar});
-    options = new FocusView({model: Avatar});
-
-    //Change view with selection box.
-    $('#choose select').change(function() {
-        var who = $('#choose select option:selected').val();
-        character.undelegateEvents();
-        options.undelegateEvents();
-        character = new PartyMemberView({model: window[who]});
-        options = new FocusView({model: window[who]});
-    });
-    */
+    $(".sortable").tablesorter({sortInitialOrder: 'desc'});
 });
 
 

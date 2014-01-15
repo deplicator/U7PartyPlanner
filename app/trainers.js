@@ -55,7 +55,7 @@ var trainerData = [
         "strength": 1
     },
     {
-        "name": "Inforlem",
+        "name": "Inforlem-i",
         "location": "Terfin",
         "cost": 50,
         "train": 3,

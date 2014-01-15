@@ -120,13 +120,14 @@ body {
     width: 80vw;
 }
 
-#memberChooser {
+#memberChooser .inner-view {
+    padding: 0.5em;
     text-align: center;
 }
 
 #memberChooser label {
     color: #EBEB00;
-    font: 2em 'Cloister Black', serif;
+    font: 1.75em 'Cloister Black', serif;
     text-shadow: 0.0625em 0.0625em #000;
 }
 
@@ -134,7 +135,7 @@ body {
     background: transparent;
     border: none;
     color: #EBEB00;
-    font: 2em 'Cloister Black', serif;
+    font: 1.75em 'Cloister Black', serif;
     text-shadow: 0.0625em 0.0625em #000;
 }
 
@@ -225,52 +226,74 @@ body {
 }
 
 
-
-#trainerAutoSelect #focus {
+#trainerSelect #trainers {
     background: #754404;
     border-radius: 0.1875em;
-    min-height: 327px;
-    padding: 0.25em;
+    padding: 0.5em;
 }
 
-#trainerAutoSelect h3 {
-    font-size: 1.4em;
-    margin: 0.25em 0 0.75em 0;
-    padding: 0;
-    text-align: center;
+#trainerSelect table {
+    border-collapse: collapse;
+    width: 100%;
 }
 
-#trainerAutoSelect #focus .focusopt {
+#trainerSelect thead th {
+    cursor: pointer;
+}
+
+#trainerSelect tbody tr {
+    background: #8B7366;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+}
+
+#trainerSelect tbody tr:nth-child(odd) {
     background: #7D6559;
     border: 1px solid #333;
-    border-bottom: none;
-    font-size: 1.25em;
-    padding: 0.125em;
 }
 
-#trainerAutoSelect #focus .focusopt:last-of-type {
-    border: 1px solid #333;
+#trainerSelect tbody tr:last-of-type {
+    border-bottom: 1px solid #333;
 }
 
-#trainerAutoSelect #focus .focusopt .description {
-    display: block;
-    font-size: .75em;
-    margin: 0 0 0 23px;
+#trainerSelect tbody tr:hover {
+    background: rgba(255, 255, 255, 0.50);
 }
 
-#trainerAutoSelect #focus .focusopt .mark {
-    color: #ECE76D;
-    font-size: .65em;
-    margin: 0 .75em;
+#trainerSelect td {
+    text-align: center;
+    padding: 0.125em 0;
 }
 
-#trainerAutoSelect #listTrainers {
-    margin: 17px 0 0 23em;
+#trainerSelect td:nth-child(1),
+#trainerSelect th:nth-child(1) {
+    text-align: left;
 }
 
-#trainerAutoSelect .disabled {
-    color: rgba(0, 0, 0, 0.5);
+
+/* tables */
+
+
+table.tablesorter tbody td {
+	color: #3D3D3D;
+	padding: 4px;
+	background-color: #FFF;
+	vertical-align: top;
 }
+table.tablesorter tbody tr.odd td {
+	background-color:#F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: #8dbdd8;
+}
+
+
 
 #notfooter {
     height: 100%;

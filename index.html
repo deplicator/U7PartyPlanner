@@ -2,14 +2,27 @@
 <html>
 <head>
     <title>Ultima VII - Trainer</title>
-    <link rel="stylesheet" href="default.css">
+    <link rel="stylesheet" href="css/default.css">
     <script src="libs/jquery-2.0.3.min.js"></script>
     <script src="libs/underscore-1.5.2.min.js"></script>
     <script src="libs/backbone-1.1.0.min.js"></script>
+    <script src="libs/jquery.tablesorter.min.js"></script>
 </head>
 <body>
     <div id="wrapper">
-        <div id="notfooter"></div>
+        <div id="notfooter">
+            <div id="memberView" class="grid half">
+                <div id="memberChooser"></div>
+                <div id="member"></div>
+                <div id="memberList"></div>
+            </div>
+            
+            <div id="trainView" class="grid half">
+                <div id="trainerSelect"></div>
+                <div id="trainerList"></div>
+                <div id="map"></div>
+            </div>
+        </div>
         <footer></footer>
     </div>
     
@@ -32,10 +45,9 @@
     </script>
     
     <script type="text/html" id="member-view">
-        <div class="inner-view partyMember">
+        <div class="inner-view">
             <img class="portrait" src="images/<%= character.get("name").toLowerCase() %>.png" alt="<%= character.get("name") %>" />
             <a title="Reset this character back to start values."><input type="reset" id="reset" class="btn btn-red" /></a>
-            <a title="Add this party member to training list."><input type="button" id="add" class="btn btn-green" value="Add" /></a>
             <div class="statbox">
                 <div class="stat">
                     <label>Strength:</label>
@@ -112,7 +124,7 @@
                 <div class="stat">
                     <label>Training:</label>
                     <span class="valueChanger">
-                        <span class="decrement <% if(character.rangeCheck("training") === "lb" || character.get("training") === 0){ %> disabled <% } %>">-</span>
+                        <span class="decrement">-</span>
                         <input type="text" id="training" value="<%= character.get("training") %>" />
                         <span class="increment">+</span>
                     </span>
@@ -122,45 +134,47 @@
     </script>
     
     <script type="text/html" id="memberList-view">
-        <div class="inner-view partyMember">
+        <div class="inner-view">
             <img src="images/avatar-shape.png" />
         </div>
     </script>
     
-    <script type="text/html" id="trainerAutoSelect-view">
-        <div class="inner-view statfocus">
-            <div id="focus">
-                <h3>Training Focus</h3>
-                <div class="focusopt">
-                    <input type="checkbox" value="strength" /><span>Strength</span><span class="mark"></span>
-                    <span class="description">damage per blow, maximum weight, maximum Hits</span>
-                </div>
-                <div class="focusopt">
-                    <input type="checkbox" value="dexterity" /><span>Dexterity</span><span class="mark"></span>
-                    <span class="description">attack speed, battle movement speed, lock picking skill, Combat</span>
-                </div>
-                <div class="focusopt">
-                <input type="checkbox" value="intelligence" /><span>Intelligence</span><span class="mark"></span>
-                    <span class="description">spell casting quality, Magic</span>
-                </div>
-                <div class="focusopt">
-                <input type="checkbox" value="combat" /><span>Combat</span><span class="mark"></span>
-                    <span class="description">hit probability</span>
-                </div>
-                <div class="focusopt">
-                <input type="checkbox" value="magic" /><span>Magic</span><span class="mark"></span>
-                    <span class="description">maximum Mana</span>
-                </div>
+    <script type="text/html" id="trainerSelect-view">
+        <div class="inner-view">
+            <div id="trainers">
+                <table class="sortable">
+                    <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>str</th>
+                            <th>dex</th>
+                            <th>int</th>
+                            <th>com</th>
+                            <th>mag</th>
+                            <th>cost</th>
+                            <th>points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% _.each(trainers, function(trainer) { %>
+                            <tr id="<%= trainer.name %>">
+                                <td><%= trainer.name.split("-")[0] %></td>
+                                <td><%= trainer.strength %></td>
+                                <td><%= trainer.dexterity %></td>
+                                <td><%= trainer.intelligence %></td>
+                                <td><%= trainer.combat %></td>
+                                <td><%= trainer.magic %></td>
+                                <td><%= trainer.cost %></td>
+                                <td><%= trainer.train %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
             </div>
-            <input type="button" id="listTrainers" value="Create List of Trainers" />
         </div>
     </script>
     
-    <script type="text/html" id="trainerManualSelect-view">
-        <div class="inner-view">
-            something
-        </div>
-    </script>
+    
     
     <script type="text/html" id="trainerList-view">
         <div class="inner-view">
@@ -174,8 +188,8 @@
         </div>
     </script>
         
-    <script src="main.js"></script>
-    <script src="partymembers.js"></script>
-    <script src="trainers.js"></script>
+    <script src="app/main.js"></script>
+    <script src="app/partymembers.js"></script>
+    <script src="app/trainers.js"></script>
 </body>
 </html>

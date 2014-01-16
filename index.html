@@ -151,7 +151,6 @@
                             <th>int</th>
                             <th>com</th>
                             <th>mag</th>
-                            <th>cost</th>
                             <th>points</th>
                         </tr>
                     </thead>
@@ -159,12 +158,31 @@
                         <% _.each(trainers, function(trainer) { %>
                             <tr id="<%= trainer.name %>">
                                 <td><%= trainer.name.split("-")[0] %></td>
-                                <td><%= trainer.strength %></td>
-                                <td><%= trainer.dexterity %></td>
-                                <td><%= trainer.intelligence %></td>
-                                <td><%= trainer.combat %></td>
-                                <td><%= trainer.magic %></td>
-                                <td><%= trainer.cost %></td>
+                                <td>
+                                    <% if(trainer.strength != 0) { %>
+                                        <%= trainer.strength %>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if(trainer.dexterity != 0) { %>
+                                        <%= trainer.dexterity %>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if(trainer.intelligence != 0) { %>
+                                        <%= trainer.intelligence %>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if(trainer.combat != 0) { %>
+                                        <%= trainer.combat %>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if(trainer.magic != 0) { %>
+                                        <%= trainer.magic %>
+                                    <% } %>
+                                </td>
                                 <td><%= trainer.train %></td>
                             </tr>
                         <% }); %>

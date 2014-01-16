@@ -2,12 +2,12 @@
     font-family: 'Doppio One';
     font-style: normal;
     font-weight: 400;
-    src: local('Doppio One Regular'), local('DoppioOne-Regular'), url(fonts/doppioone.woff) format('woff');
+    src: local('Doppio One Regular'), local('DoppioOne-Regular'), url(../fonts/doppioone.woff) format('woff');
 }
 
 @font-face {
     font-family: 'Cloister Black';
-    src: url(fonts/cloisterblack.ttf);
+    src: url(../fonts/cloisterblack.ttf);
 }
 
 *, *:after, *:before {
@@ -17,7 +17,7 @@
 }
 
 html {
-    background: url(images/u7background.jpg) no-repeat center center fixed;
+    background: url(../images/u7background.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -107,7 +107,7 @@ body {
 
 /** Specific Elements **/
 #wrapper {
-    background: url(images/u7background-blured.jpg) no-repeat center center fixed;
+    background: url(../images/u7background-blured.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -261,8 +261,10 @@ body {
 }
 
 #trainerSelect td {
+    border-right: 1px solid #333;
+    min-width: 2.1em;
+    padding: 0.125em 0.25em;
     text-align: center;
-    padding: 0.125em 0;
 }
 
 #trainerSelect td:nth-child(1),

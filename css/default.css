@@ -39,12 +39,29 @@ h2 {
     color: #EBEB00;
     font: 1.75em 'Cloister Black', serif;
     margin: 0;
+    position: relative;
     text-shadow: 0.0625em 0.0625em #000;
 }
 
 h1 {
     font-size: 3em;
     text-align: center;
+}
+
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/::after */
+.tooltip:hover::after {
+    background: #DDD;
+    border: 1px solid #5A5A5A;
+    border-radius: 5px;
+    color: #181818;
+    content: attr(help);
+    font: 0.5em san-serif;
+    position: absolute;
+    text-shadow: none;
+    width: 15em;
+    z-index: 10;
+    text-align: left;
+    padding: .25em;
 }
 
 .grid {
@@ -118,6 +135,18 @@ h1 {
     border-left: 2px solid #37FE3F;
 }
 
+.trained {
+    color: white;
+    text-shadow: 0 0 0.0625em #A3ACEB, 
+                 0 0 0.0625em #A3ACEB, 
+                 0 0 0.1875em #A3ACEB, 
+                 0 0 0.1875em #30F, 
+                 0 0 0.25em #30F, 
+                 0 0 .5em #30F, 
+                 0 0 .75em #30F, 
+                 0 0 1em #30F
+}
+
 /** Specific Elements **/
 #wrapper {
     background: url(../images/u7background-blured.jpg) no-repeat center center fixed;
@@ -128,7 +157,7 @@ h1 {
     height: 100%;
     margin: 0 auto;
     max-width: 65em;
-    min-height: 600px;
+    min-height: 800px;
     min-width: 55em;
     width: 80vw;
 }
@@ -323,7 +352,7 @@ background-color: #8dbdd8;
 #notfooter {
     height: 100%;
     margin: 0 0 -50px 0;
-    min-height: 630px;
+    min-height: 800px;
 }
 
 footer {

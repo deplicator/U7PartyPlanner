@@ -235,17 +235,18 @@ var PartyMember = Backbone.Model.extend({
                         }
                     }
                 });
+                // Add trainer to list.
+                if(self.get('trainedWithList')[trainer]) {
+                    var currentCount = self.get('trainedWithList')[trainer];
+                    self.get('trainedWithList')[trainer] = currentCount + 1;
+                } else {
+                    self.get('trainedWithList')[trainer] = 1
+                }
             } else {
                 console.log('not enought points');
             }
             
-            // Add trainer to list.
-            if(self.get('trainedWithList')[trainer]) {
-                var currentCount = self.get('trainedWithList')[trainer];
-                self.get('trainedWithList')[trainer] = currentCount + 1;
-            } else {
-                self.get('trainedWithList')[trainer] = 1
-            }
+
             
         } else if(data[1] === 2) { // Right mouse click.
             
@@ -262,6 +263,7 @@ var PartyMember = Backbone.Model.extend({
                 }
             }
         }
+        this.trigger('change');
     }
 });
 
@@ -274,7 +276,7 @@ var Party = Backbone.Collection.extend({
     },
     getByName: function(name){
         return this.filter(function(member) {
-            return member.get("name") === name;
+            return member.get('name') === name;
         });
     }
 });
@@ -297,12 +299,17 @@ var Trainer = Backbone.Model.extend({
 });
 
 var Trainers = Backbone.Collection.extend({
+    model: Trainer,
     initialize: function() {
         /*this.on('all', function(e) {
             console.log('Trainer Collection: ' + e);
         });*/
     },
-    model: Trainer
+    getByName: function(name){
+        return this.filter(function(trainer) {
+            return trainer.get('name') === name;
+        });
+    }
 });
 
 
@@ -427,9 +434,9 @@ var MemberListView = Backbone.View.extend({
 var TrainerSelectView = Backbone.View.extend({
     el: "#trainerSelect",
     initialize: function(){
-        this.on('all', function(e) {
+        /*this.on('all', function(e) {
             console.log('Trainer Select View: ' + e);
-        });
+        });*/
         this.listenTo(this.model, 'change', this.render);
     },
     render: function(){
@@ -440,9 +447,7 @@ var TrainerSelectView = Backbone.View.extend({
         'mousedown tr': 'triggerTrainWith'
     },
     triggerTrainWith: function(evt) {
-        console.log('trainWith trigger');
-        this.model.trainWith([$(evt.target).parent().attr('id'), evt.button])
-        //this.trigger("trainWith", [$(evt.target).parent().attr('id'), evt.button]);
+        this.model.trainWith([$(evt.target).parent().attr('id'), evt.button]);
     }
 });
 

@@ -21,17 +21,16 @@
             <div id="trainView" class="grid half">
                 <div id="trainerSelect"></div>
                 <div id="trainerList"></div>
-                <div id="map"></div>
             </div>
+            <div id="map" class="grid"></div>
         </div>
         <footer></footer>
     </div>
     
     <script type="text/html" id="memberChooser-view">
         <div class="inner-view">
-            <a title="Selecting a party member will add them to your party. They can be dismissed by clicking on the party member's image below.">
-                <h2>Choose Party Member:</h2>
-            </a>
+            <h2 class="tooltip" help="Selecting a party member will add them to your party. They can be dismissed by clicking on them in the 'Current Party' box below.">
+            Choose Party Member:</h2>
             <select>
                 <option value="Avatar" selected>Avatar</option>
                 <option value="Dupre">Dupre</option>
@@ -138,7 +137,8 @@
     
     <script type="text/html" id="memberList-view">
         <div class="inner-view">
-            <h2>Current Party</h2>
+            <h2 class="tooltip" help="Represents selected party members to train. Click on a member to dismiss.">
+            Current Party</h2>
             <% _.each(party, function(member) { %>
                 <img id="<%= member.name %>" src="images/<%= member.name.toLowerCase() %>-shape.png" />
             <% }); %>
@@ -147,7 +147,8 @@
     
     <script type="text/html" id="trainerSelect-view">
         <div class="inner-view">
-            <h2>Select Trainers</h2>
+            <h2 class="tooltip" help="Click to train. Right click to untrain. This will update stats for selected party member and add the trainer to the list of trainers to visit.">
+            Select Trainers</h2>
             <div id="trainers">
                 <table class="sortable">
                     <thead>
@@ -163,7 +164,12 @@
                     </thead>
                     <tbody>
                         <% _.each(trainers, function(trainer) { %>
-                            <tr id="<%= trainer.name %>" >
+                            <tr id="<%= trainer.name %>" 
+                            <% if(_.include(_.keys(character.get("trainedWithList")), trainer.name)) { %>
+                                class="trained"
+                            <% } %>
+                            
+                            >
                                 <td><%= trainer.name.split("-")[0] %></td>
                                 <td>
                                     <% if(trainer.strength != 0) { %>
@@ -203,13 +209,15 @@
     
     <script type="text/html" id="trainerList-view">
         <div class="inner-view">
-            something
+            <h2 class="tooltip" help="List of trainers to visit and which party members to train when you get there.">
+            Trainers to Visit</h2>
         </div>
     </script>
     
     <script type="text/html" id="map-view">
         <div class="inner-view">
-            something
+            <h2 class="tooltip" help="Where to go.">
+            Map</h2>
         </div>
     </script>
         

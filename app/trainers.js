@@ -49,7 +49,7 @@ var trainerData = [
     },
     {
         "id": 5,
-        "name": "Inforlem",
+        "name": "Inforlem - body",
         "location": "Terfin",
         "cost": 50,
         "train": 3,
@@ -61,7 +61,7 @@ var trainerData = [
     },
     {
         "id": 6,
-        "name": "Inforlem",
+        "name": "Inforlem - mind",
         "location": "Terfin",
         "cost": 50,
         "train": 3,

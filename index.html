@@ -16,21 +16,28 @@
                 <div id="memberChooser"></div>
                 <div id="member"></div>
                 <div id="memberList"></div>
+                <div id="map" class="grid"></div>
             </div>
             
             <div id="trainView" class="grid half">
                 <div id="trainerSelect"></div>
                 <div id="trainerList"></div>
             </div>
-            <div id="map" class="grid"></div>
         </div>
-        <footer></footer>
+        <footer>
+            <a href="#">About</a>
+            <a href="#">Source</a>
+            <a href="#">Credits</a>
+        </footer>
     </div>
     
     <script type="text/html" id="memberChooser-view">
         <div class="inner-view">
-            <h2 class="tooltip" help="Selecting a party member will add them to your party. They can be dismissed by clicking on them in the 'Current Party' box below.">
-            Choose Party Member:</h2>
+            <h2 class="tooltip" 
+                help="Selecting a party member will add them to your party. They can be dismissed by
+                clicking on them in the 'Current Party' box below.">
+                Choose Party Member:
+            </h2>
             <select>
                 <option value="Avatar" selected>Avatar</option>
                 <option value="Dupre">Dupre</option>
@@ -49,7 +56,7 @@
     <script type="text/html" id="member-view">
         <div class="inner-view">
             <img class="portrait" src="images/<%= character.get("name").toLowerCase() %>.png" alt="<%= character.get("name") %>" />
-            <a title="Reset this character back to start values."><input type="reset" id="reset" class="btn btn-red" /></a>
+            <a title="Reset this character back to start values."><input type="reset" id="reset" class="btn btn-red tooltil" /></a>
             <div class="statbox">
                 <div class="stat">
                     <label>Strength:</label>
@@ -170,7 +177,7 @@
                             <% } %>
                             
                             >
-                                <td><%= trainer.name %></td>
+                                <td><%= trainer.name.split(" - ")[0] %></td>
                                 <td>
                                     <% if(trainer.strength != 0) { %>
                                         <%= trainer.strength %>
@@ -209,20 +216,43 @@
     
     <script type="text/html" id="trainerList-view">
         <div class="inner-view">
-            <h2 class="tooltip" help="List of trainers to visit and which party members to train when you get there.">
-            Trainers to Visit</h2>
+            <h2 class="tooltip" 
+                help="List of trainers to visit and which party members to train when you get 
+                there.">
+                Trainers to Visit
+            </h2>
+            <% if(_.size(checklist) > 0) { %>
+                <dl>
+                <% _.each(checklist, function(member, trainer) { %>
+                    <dt><%= trainer %></dt>
+                    <% _.each(member, function(times, name) { 
+                           if(times === 1) { %>
+                               <dd><%= name %></dd>
+                        <% } else { %>
+                               <dd><%= name %> x<%= times %></dd>
+                        <% } %>
+                    <% }); %>
+                    <div class=break></div>
+                <% }); %>
+                </dl>
+            <% } %>
         </div>
     </script>
     
     <script type="text/html" id="map-view">
         <div class="inner-view">
             <h2 class="tooltip" help="Where to go.">
-            Map</h2>
+                Map
+            </h2>
+            <img src="images/map.jpg" />
         </div>
     </script>
-        
-    <script src="app/main.js"></script>
-    <script src="app/partymembers.js"></script>
-    <script src="app/trainers.js"></script>
+    
+    <!--core app scripts-->
+    <script src="app/models.js"></script>       <!--backbone models and collections-->
+    <script src="app/views.js"></script>        <!--backbone views-->
+    <script src="app/partymembers.js"></script> <!--Instantiate potential party members models-->
+    <script src="app/trainers.js"></script>     <!--JSON of trainers-->
+    <script src="app/main.js"></script>         <!--Run on document ready-->
 </body>
 </html>

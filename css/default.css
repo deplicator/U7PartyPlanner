@@ -48,6 +48,10 @@ h1 {
     text-align: center;
 }
 
+dl {
+    background: white;
+}
+
 /* https://developer.mozilla.org/en-US/docs/Web/CSS/::after */
 .tooltip:hover::after {
     background: #DDD;
@@ -71,11 +75,6 @@ h1 {
 }
 
 .half {
-    float: left;
-    width: 50%;
-}
-
-.quarter {
     float: left;
     width: 50%;
 }
@@ -157,7 +156,7 @@ h1 {
     height: 100%;
     margin: 0 auto;
     max-width: 65em;
-    min-height: 800px;
+    min-height: 1850px;
     min-width: 55em;
     width: 80vw;
 }
@@ -324,10 +323,7 @@ text-align: center;
     text-align: left;
 }
 
-
-/* tables */
-
-
+/* sortable tables */
 table.tablesorter tbody td {
 	color: #3D3D3D;
 	padding: 4px;
@@ -347,12 +343,47 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 background-color: #8dbdd8;
 }
 
+#trainerList dl {
+    background: #754404;
+    border-radius: 0.1875em;
+    font-size: 1em;
+    padding: 0.5em 0.5em 0 0.5em;
+}
+
+#trainerList dl dt {
+    background: #7D6559;
+    border: 1px solid #333;
+    border-bottom: none;
+    font-size: 1.25em;
+    padding: 0 0.625em;
+}
+
+#trainerList dl dd {
+    background: #8B7366;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+    padding: 0 0.625em 0 1.5em;
+    margin: 0;
+}
+
+#trainerList .break {
+    border-top: 1px solid #333;
+    height: 0.5em;
+}
+
+#map {
+    text-align: center;
+}
+
+#map img {
+    width: 100%;
+}
 
 
 #notfooter {
     height: 100%;
     margin: 0 0 -50px 0;
-    min-height: 800px;
+    min-height: 1850px;
 }
 
 footer {

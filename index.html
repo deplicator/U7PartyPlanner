@@ -164,13 +164,13 @@
                     </thead>
                     <tbody>
                         <% _.each(trainers, function(trainer) { %>
-                            <tr id="<%= trainer.name %>" 
+                            <tr id="trainer-<%= trainer.id %>" 
                             <% if(_.include(_.keys(character.get("trainedWithList")), trainer.name)) { %>
                                 class="trained"
                             <% } %>
                             
                             >
-                                <td><%= trainer.name.split("-")[0] %></td>
+                                <td><%= trainer.name %></td>
                                 <td>
                                     <% if(trainer.strength != 0) { %>
                                         <%= trainer.strength %>

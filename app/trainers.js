@@ -1,5 +1,6 @@
 var trainerData = [
     {
+        "id": 1,
         "name": "Bradman",
         "location": "Yew (Outer area)",
         "cost": 30,
@@ -11,6 +12,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 2,
         "name": "Chad",
         "location": "Moonglow (far South)",
         "cost": 45,
@@ -22,6 +24,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 3,
         "name": "De Snel",
         "location": "Jhelom (West Side)",
         "cost": 40,
@@ -33,6 +36,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 4,
         "name": "Denby",
         "location": "Britain (above Apothecary's)",
         "cost": 75,
@@ -44,6 +48,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 5,
         "name": "Inforlem",
         "location": "Terfin",
         "cost": 50,
@@ -55,7 +60,8 @@ var trainerData = [
         "strength": 1
     },
     {
-        "name": "Inforlem-i",
+        "id": 6,
+        "name": "Inforlem",
         "location": "Terfin",
         "cost": 50,
         "train": 3,
@@ -66,6 +72,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 7,
         "name": "Jakher",
         "location": "Minoc (NE house)",
         "cost": 20,
@@ -77,6 +84,7 @@ var trainerData = [
         "strength": 1
     },
     {
+        "id": 8,
         "name": "Jillian",
         "location": "Moonglow (Lycaeum)",
         "cost": 35,
@@ -88,6 +96,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 9,
         "name": "Karenna",
         "location": "Minoc (NE house)",
         "cost": 20,
@@ -99,6 +108,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 10,
         "name": "Lucky",
         "location": "Buccaneer's Den",
         "cost": 35,
@@ -110,6 +120,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 11,
         "name": "Markus",
         "location": "Trinsic",
         "cost": 20,
@@ -121,6 +132,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 12,
         "name": "Menion",
         "location": "Serpent's Hold",
         "cost": 45,
@@ -132,6 +144,7 @@ var trainerData = [
         "strength": 2
     },
     {
+        "id": 13,
         "name": "Penni",
         "location": "Yew (Outer area)",
         "cost": 35,
@@ -143,6 +156,7 @@ var trainerData = [
         "strength": 1
     },
     {
+        "id": 14,
         "name": "Perrin",
         "location": "Yew (near Abbey)",
         "cost": 45,
@@ -154,6 +168,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 15,
         "name": "Rayburt",
         "location": "Cove",
         "cost": 60,
@@ -165,6 +180,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 16,
         "name": "Sentri",
         "location": "Britain (East Side)",
         "cost": 30,
@@ -176,6 +192,7 @@ var trainerData = [
         "strength": 0
     },
     {
+        "id": 17,
         "name": "Zaksam",
         "location": "Vesper",
         "cost": 40,
@@ -187,6 +204,7 @@ var trainerData = [
         "strength": 1
     },
     {
+        "id": 18,
         "name": "Zella",
         "location": "Britain (East Side)",
         "cost": 45,

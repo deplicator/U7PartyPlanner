@@ -195,38 +195,26 @@ var PartyMember = Backbone.Model.extend({
         }
     },
     reset: function() {
-        var original = this.initialStats;
-        keys = _.keys(original);
-        var keyslen = keys.length;
-        var current = this.attributes;
-        for(i = 0; i < keyslen; i++) {
-            key = keys[i];
-            if(!_.isEqual(current[key], original[key])) {
-                this.set(key, original[key]);
-            }
-        }
-        this.set('training', original['training']);
+        var self = this;
+        var keys = _.keys(self.initialStats);
+        _.each(keys, function (key) {
+            self.set(key, self.initialStats[key]);
+        });
+        this.set('trainedWithList', new Object());
     },
     trainWith: function(data) {
         var self = this;
-        var trainer = data[0];
+        var trainer = trainers.get(data[0]);
         
-        //kludge way to get trainer data
-        for(i = 0; i < 18; i++) {
-            if(trainerData[i]['name'] === trainer) {
-                who = trainerData[i];
-            }
-        }
-        
-        if(data[1] === 0) { //left mouse click
-            if(self.get('training') >= who.train) {
-                self.set('training', self.get('training') - who['train']);
-                var attributes = _.keys(who);
+        if(data[1] === 0) { // Left mouse click.
+            if(self.get('training') >= trainer.get('train')) {
+                self.set('training', self.get('training') - trainer.get('train'));
+                var attributes = _.keys(trainer.attributes);
                 _.each(attributes, function(attribute) {
                     if(!isNaN(self.get(attribute))) {
                         if(attribute != 'combat') { //only dealing with combat rubber band effect for now.
-                            self.set(attribute, self.get(attribute) + who[attribute]);
-                        } else if(who[attribute] != 0) {
+                            self.set(attribute, self.get(attribute) + trainer.get(attribute));
+                        } else if(trainer.get(attribute) != 0) {
                             var high = Math.max(self.get('dexterity'), self.get('combat'));
                             var low = Math.min(self.get('dexterity'), self.get('combat'));
                             var rubberband = Math.ceil((high -  low) / 2);
@@ -236,33 +224,52 @@ var PartyMember = Backbone.Model.extend({
                     }
                 });
                 // Add trainer to list.
-                if(self.get('trainedWithList')[trainer]) {
-                    var currentCount = self.get('trainedWithList')[trainer];
-                    self.get('trainedWithList')[trainer] = currentCount + 1;
+                if(self.get('trainedWithList')[trainer.get('name')]) {
+                    var currentCount = self.get('trainedWithList')[trainer.get('name')];
+                    self.get('trainedWithList')[trainer.get('name')] = currentCount + 1;
                 } else {
-                    self.get('trainedWithList')[trainer] = 1
+                    self.get('trainedWithList')[trainer.get('name')] = 1
                 }
             } else {
                 console.log('not enought points');
             }
-            
-
-            
         } else if(data[1] === 2) { // Right mouse click.
+            if(self.get('trainedWithList')[trainer.get('name')]) {
             
-            // untrain stat magic goes here
-            console.log('untrain');
-            
-            // Remove trainer from list.
-            if(self.get('trainedWithList')[trainer]) {
-                var currentCount = self.get('trainedWithList')[trainer];
+                // untrain stat magic goes here
+                self.set('training', self.get('training') + trainer.get('train'));
+                var attributes = _.keys(trainer.attributes);
+                _.each(attributes, function(attribute) {
+                    if(!isNaN(self.get(attribute))) {
+                    
+                    //ignoring combat causing problems when untraining.
+                    //when dex is decremented by 2 (untraning with Bradman) combat is ignored, only dex is reset
+                    //combat is then reduced by the else statement by more than 2
+                    //may need to rejigger this to handle trainers with magic and combat separate from the others
+                    //only 4 of 18 trainers do not train either magic or combat
+                    
+                        if(attribute != 'combat') { //only dealing with combat rubber band effect for now.
+                            self.set(attribute, self.get(attribute) - trainer.get(attribute));
+                        } else {
+                            var high = Math.max(self.get('dexterity'), self.get('combat'));
+                            var low = Math.min(self.get('dexterity'), self.get('combat'));
+                            var rubberband = Math.floor((high -  low) / 2);
+                            if(rubberband === 0) { rubberband = 0; }
+                            self.set('combat', self.get('combat') - rubberband);
+                        }
+                    }
+                });
+                
+                // Remove trainer from list.
+                var currentCount = self.get('trainedWithList')[trainer.get('name')];
                 if(currentCount === 1) {
-                    delete self.get('trainedWithList')[trainer];
+                    delete self.get('trainedWithList')[trainer.get('name')];
                 } else {
-                    self.get('trainedWithList')[trainer] = currentCount - 1;
+                    self.get('trainedWithList')[trainer.get('name')] = currentCount - 1;
                 }
             }
         }
+        // Trigger model change because for some reason it doesn't do that.
         this.trigger('change');
     }
 });
@@ -447,7 +454,8 @@ var TrainerSelectView = Backbone.View.extend({
         'mousedown tr': 'triggerTrainWith'
     },
     triggerTrainWith: function(evt) {
-        this.model.trainWith([$(evt.target).parent().attr('id'), evt.button]);
+        var id = $(evt.target).parent().attr('id').split('-')[1];
+        this.model.trainWith([id, evt.button]);
     }
 });
 

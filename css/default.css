@@ -34,6 +34,19 @@ body {
     padding: 0;
 }
 
+h1,
+h2 {
+    color: #EBEB00;
+    font: 1.75em 'Cloister Black', serif;
+    margin: 0;
+    text-shadow: 0.0625em 0.0625em #000;
+}
+
+h1 {
+    font-size: 3em;
+    text-align: center;
+}
+
 .grid {
     float: left;
     padding: 1em;
@@ -108,10 +121,10 @@ body {
 /** Specific Elements **/
 #wrapper {
     background: url(../images/u7background-blured.jpg) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
     background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
     height: 100%;
     margin: 0 auto;
     max-width: 65em;
@@ -125,10 +138,8 @@ body {
     text-align: center;
 }
 
-#memberChooser label {
-    color: #EBEB00;
-    font: 1.75em 'Cloister Black', serif;
-    text-shadow: 0.0625em 0.0625em #000;
+#memberChooser h2 {
+    display: inline;
 }
 
 #memberChooser select {
@@ -221,10 +232,21 @@ body {
     cursor: default;
 }
 
-#memberList img {
-    border: 1px solid white;
+#memberList {
+    text-align: center;
 }
 
+#memberList img {
+    cursor: no-drop;
+}
+
+#memberList img:first-of-type {
+    padding: 4px 0 0 0;
+}
+
+#trainerSelect {
+text-align: center;
+}
 
 #trainerSelect #trainers {
     background: #754404;
@@ -245,6 +267,7 @@ body {
     background: #8B7366;
     border-left: 1px solid #333;
     border-right: 1px solid #333;
+    cursor: alias;
 }
 
 #trainerSelect tbody tr:nth-child(odd) {

@@ -99,3 +99,6 @@ Katrina = new PartyMember({
     'exp': 200,
     'training': 0
 });
+
+// Empty Party Collection, members are added when selected from the Party Member Chooser.
+party = new Party();

@@ -1,10 +1,10 @@
 // Party Member model.
 var PartyMember = Backbone.Model.extend({
     initialize: function () {
-        this.on('all', function(e) {
+        /*this.on('all', function(e) {
             console.log('PartyMember model: ' + this.get('name') + ' ' + e);
-        });
-        
+        });*/
+
         this.calcHits();
         this.calcLevel('exp');
         this.initialStats = _.clone(this.attributes);
@@ -268,18 +268,23 @@ var PartyMember = Backbone.Model.extend({
 var Party = Backbone.Collection.extend({
     model: PartyMember,
     initialize: function() {
-        this.on('all', function(e) {
+        /*this.on('all', function(e) {
             console.log('Party Collection: ' + e);
-        });
+        });*/
     },
+    getByName: function(name){
+        return this.filter(function(member) {
+            return member.get("name") === name;
+        });
+    }
 });
 
 // Trainer NPC model.
 var Trainer = Backbone.Model.extend({
     initialize: function() {
-        this.on('all', function(e) {
+        /*this.on('all', function(e) {
             console.log('Trainer model: ' + e);
-        });
+        });*/
         this.calcValue();
     },
     calcValue: function() {
@@ -293,16 +298,16 @@ var Trainer = Backbone.Model.extend({
 
 var Trainers = Backbone.Collection.extend({
     initialize: function() {
-        this.on('all', function(e) {
+        /*this.on('all', function(e) {
             console.log('Trainer Collection: ' + e);
-        });
+        });*/
     },
     model: Trainer
 });
 
 
 /* 
- * Parent view creates and renders two main views, party and train.
+ * Views
  * 
  * ParentView
  * |-MemberChooserView
@@ -316,51 +321,14 @@ var Trainers = Backbone.Collection.extend({
  * Interesting discussion on where to render views: 
  * http://stackoverflow.com/questions/9271507/how-to-render-and-append-sub-views-in-backbone-js.
  */
-var ParentView = Backbone.View.extend({
-    el: '#notfooter',
-    initialize: function() {
-        this.on('all', function(e) {
-            console.log('Parent View: ' + e);
-        });
-        
-        // Views
-        this.memberChooser = new MemberChooserView();
-        this.member = new MemberView({model: Avatar});
-        this.memberList = new MemberListView();
-        this.trainerSelect = new TrainerSelectView({model: Avatar});
-        this.trainerList = new TrainerListView();
-        this.map = new MapView();
-
-        // Listeners
-        this.listenTo(this.memberChooser, "memberChange", this.memberChange);
-        this.member.model.listenTo(this.trainerSelect, "trainWith", this.member.model.trainWith);
-    },
-    render: function() {
-        this.memberChooser.render();
-        this.member.render();
-        this.memberList.render();
-        this.trainerSelect.render();
-        this.trainerList.render();
-        this.map.render();
-        return this;
-    },
-    memberChange: function(name) {
-        this.member.undelegateEvents();
-        this.trainerSelect.undelegateEvents();
-        this.member = new MemberView({model: window[name]});
-        this.trainerSelect = new TrainerSelectView({model: window[name]});
-        this.member.render();
-        this.trainerSelect.render();
-    }
-});
-
-//Member selector
+ 
+//Member Selection
 var MemberChooserView = Backbone.View.extend({
     el: '#memberChooser',
     initialize: function() {
-        this.on('all', function(e) {
+        /*this.on('all', function(e) {
             console.log('Chooser View: ' + e);
-        });
+        });*/
     },
     render: function() {
         var template = _.template($("#memberChooser-view").html());
@@ -437,10 +405,19 @@ var MemberListView = Backbone.View.extend({
         this.on('all', function(e) {
             console.log('Member List View: ' + e);
         });
+        this.listenTo(party, 'all', this.render);
     },
     render: function(){
-        var template = _.template($("#memberList-view").html());
+        var template = _.template($("#memberList-view").html(), {party: party.toJSON()});
         this.$el.html(template);
+    },
+    events: {
+        'click img': 'removeMember'
+    },
+    removeMember: function(evt) {
+        if(evt.target.id != "Avatar") {
+            party.remove(party.getByName(evt.target.id));
+        }
     }
 });
  
@@ -453,12 +430,10 @@ var TrainerSelectView = Backbone.View.extend({
         this.on('all', function(e) {
             console.log('Trainer Select View: ' + e);
         });
-        
-        
-        console.log(this.model);
+        this.listenTo(this.model, 'change', this.render);
     },
     render: function(){
-        var template = _.template($("#trainerSelect-view").html(), { trainers: trainers.toJSON() })
+        var template = _.template($("#trainerSelect-view").html(), {trainers: trainers.toJSON(), character: this.model});
         this.$el.html(template);
     },
     events: {
@@ -466,7 +441,8 @@ var TrainerSelectView = Backbone.View.extend({
     },
     triggerTrainWith: function(evt) {
         console.log('trainWith trigger');
-        this.trigger("trainWith", [$(evt.target).parent().attr('id'), evt.button]);
+        this.model.trainWith([$(evt.target).parent().attr('id'), evt.button])
+        //this.trigger("trainWith", [$(evt.target).parent().attr('id'), evt.button]);
     }
 });
 
@@ -501,19 +477,58 @@ var MapView = Backbone.View.extend({
 });
 
 
+var ParentView = Backbone.View.extend({
+    el: '#notfooter',
+    initialize: function() {
+        /*this.on('all', function(e) {
+            console.log('Parent View: ' + e);
+        });*/
+        
+        // Views
+        this.memberChooser = new MemberChooserView();
+        this.member = new MemberView({model: Avatar});
+        this.memberList = new MemberListView();
+        this.trainerSelect = new TrainerSelectView({model: Avatar});
+        this.trainerList = new TrainerListView();
+        this.map = new MapView();
+
+        // Listeners
+        this.listenTo(this.memberChooser, "memberChange", this.memberChange);
+    },
+    render: function() {
+        this.memberChooser.render();
+        this.member.render();
+        this.memberList.render();
+        this.trainerSelect.render();
+        this.trainerList.render();
+        this.map.render();
+        $(".sortable").tablesorter({sortInitialOrder: 'desc'});
+        return this;
+    },
+    memberChange: function(name) {
+        this.member.undelegateEvents();
+        this.trainerSelect.undelegateEvents();
+        this.member = new MemberView({model: window[name]});
+        this.trainerSelect = new TrainerSelectView({model: window[name]});
+        this.member.render();
+        this.trainerSelect.render();
+    }
+});
+
+
+
+
 
 
 $(document).ready(function() {
-    document.oncontextmenu = function() {return false;};
+    // Disables normal right click menu because right click is used to untrain a party member.
+    document.oncontextmenu = function() { return false; };
     
-    party = new Party();
-    
-    trainers = new Trainers();
-    trainers.add(trainerData);
-    
+    // Start the application.
     app = new ParentView();
     app.render();
-    $(".sortable").tablesorter({sortInitialOrder: 'desc'});
+    
+    
 });
 
 

@@ -11,6 +11,7 @@
 <body>
     <div id="wrapper">
         <div id="notfooter">
+            <h1>U7 Party Planner</h1>
             <div id="memberView" class="grid half">
                 <div id="memberChooser"></div>
                 <div id="member"></div>
@@ -28,7 +29,9 @@
     
     <script type="text/html" id="memberChooser-view">
         <div class="inner-view">
-            <label>Choose Party Member:</label>
+            <a title="Selecting a party member will add them to your party. They can be dismissed by clicking on the party member's image below.">
+                <h2>Choose Party Member:</h2>
+            </a>
             <select>
                 <option value="Avatar" selected>Avatar</option>
                 <option value="Dupre">Dupre</option>
@@ -135,12 +138,16 @@
     
     <script type="text/html" id="memberList-view">
         <div class="inner-view">
-            <img src="images/avatar-shape.png" />
+            <h2>Current Party</h2>
+            <% _.each(party, function(member) { %>
+                <img id="<%= member.name %>" src="images/<%= member.name.toLowerCase() %>-shape.png" />
+            <% }); %>
         </div>
     </script>
     
     <script type="text/html" id="trainerSelect-view">
         <div class="inner-view">
+            <h2>Select Trainers</h2>
             <div id="trainers">
                 <table class="sortable">
                     <thead>
@@ -156,7 +163,7 @@
                     </thead>
                     <tbody>
                         <% _.each(trainers, function(trainer) { %>
-                            <tr id="<%= trainer.name %>">
+                            <tr id="<%= trainer.name %>" >
                                 <td><%= trainer.name.split("-")[0] %></td>
                                 <td>
                                     <% if(trainer.strength != 0) { %>

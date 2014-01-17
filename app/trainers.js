@@ -198,3 +198,6 @@ var trainerData = [
         "strength": 0
     }
 ]
+
+trainers = new Trainers();
+trainers.add(trainerData);

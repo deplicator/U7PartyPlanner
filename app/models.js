@@ -4,10 +4,10 @@ var PartyMember = Backbone.Model.extend({
         /*this.on('all', function(e) {
             console.log('PartyMember model: ' + this.get('name') + ' ' + e);
         });*/
-
         this.calcHits();
         this.calcLevel('exp');
         this.initialStats = _.clone(this.attributes);
+        this.updateStatHistory('initial', _.clone(this.attributes));
         this.on('change:strength', this.calcHits, this);
         this.on('change:dexterity', this.calcCombat, this);
         //The link between Intelligence and Magic is indicated in the manual, but not in the game.
@@ -24,7 +24,9 @@ var PartyMember = Backbone.Model.extend({
         return {
             magic: 0,
             mana: 0,
-            trainedWithList: new Object()
+            trainedWithList: new Object(), //change to training history to undo training properly.
+            trainingCount: 0,
+            statHistory: new Object()
         };
     },
     calcLevel: function(base) {
@@ -203,28 +205,85 @@ var PartyMember = Backbone.Model.extend({
         });
         this.set('trainedWithList', new Object());
     },
+    updateStatHistory: function(trainer) {
+    /**
+     * Updates statHistory object with each trainer so training can be undone. Originally attempted
+     * to calculate the rubberband effect in reverse, but it's not possible on subsequent trains.
+     * @param trainer string    Most recent trainer.
+     */
+        this.get('statHistory')[this.get('trainingCount')] = new Object();
+        this.get('statHistory')[this.get('trainingCount')]['trainer'] = trainer;
+        this.get('statHistory')[this.get('trainingCount')]['combat'] = this.get('combat');
+        this.get('statHistory')[this.get('trainingCount')]['dexterity'] = this.get('dexterity');
+        this.get('statHistory')[this.get('trainingCount')]['intelligence'] = this.get('intelligence');
+        this.get('statHistory')[this.get('trainingCount')]['magic'] = this.get('magic');
+        this.get('statHistory')[this.get('trainingCount')]['strength'] = this.get('strength');
+        this.get('statHistory')[this.get('trainingCount')]['training'] = this.get('training');
+        
+        
+        this.set('trainingCount', this.get('trainingCount') + 1);
+
+        
+    },
+    rollBackStatHistory: function(trainer) {
+    /**
+     * Because of the rubberband effect, training order becomes important. For example, is Spark
+     * trains with Markus, it only cost 1 training point but Spark's combat moves up 6 (10 to 16).
+     * This happens because Sparks dexterity is much higher than his combat and these stats are 
+     * linked. On the other hand, if Spark were to train with Karenna first, then Markus, his combat
+     * increase is 8 from Karenna, then 3 from Markus. To solve the untraining problem, the party
+     * member model saves stat history. When untraining, stat history is rolled back. If the user
+     * untrains with a previous trainer, subsequent training must also be undone. Using the previous
+     * example, after training with Karenna and Markus, if the user untrains with Karenna they will
+     * also be untrained with Markus.
+     * @param trainer string    Most recent trainer.
+     */
+        var trains = this.get('trainingCount') - 1;
+        for(i = trains; i > 0; i--) {
+            
+        }
+     
+    },
     trainWith: function(data) {
+    /**
+     * Updates party member model with trainer's information. Should be equivalent to training in
+     * the game. The rubberband effect is calculated as half the absolute value of the difference
+     * between the primary and secondary stat rounded up (or something close to that). Referenced 
+     * from http://strategywiki.org/wiki/Ultima_VII:_The_Black_Gate/Trainers.
+     * @param data array    Index zero is trainer model id, index one is mouse button number from
+     *                      click event. Right click is 0 and is used to train party member. Left
+     *                      click is 2 and used to roll back training (see rollBackStatHistory 
+     *                      function for details).
+     *
+     * Needs more in game testing with rubberband effect. With 10 potential party members, 18
+     * trainers, uncertain number of training points, and training order a factor: there are a lot 
+     * of permutations.
+     */
         var self = this;
         var trainer = trainers.get(data[0]);
         
-        if(data[1] === 0) { // Left mouse click.
+        if(data[1] === 0) { // Left mouse click trains.
             if(self.get('training') >= trainer.get('train')) {
                 self.set('training', self.get('training') - trainer.get('train'));
-                var attributes = _.keys(trainer.attributes);
-                _.each(attributes, function(attribute) {
-                    if(!isNaN(self.get(attribute))) {
-                        if(attribute != 'combat') { //only dealing with combat rubber band effect for now.
-                            self.set(attribute, self.get(attribute) + trainer.get(attribute));
-                        } else if(trainer.get(attribute) != 0) {
-                            var high = Math.max(self.get('dexterity'), self.get('combat'));
-                            var low = Math.min(self.get('dexterity'), self.get('combat'));
-                            var rubberband = Math.ceil((high -  low) / 2);
-                            if(rubberband === 0) { rubberband = 1; }
-                            self.set('combat', self.get('combat') + rubberband);
-                        }
-                    }
-                });
-                // Add trainer to list.
+                self.set('strength', self.get('strength') + trainer.get('strength'));
+                self.set('dexterity', self.get('dexterity') + trainer.get('dexterity'));
+                self.set('intelligence', self.get('intelligence') + trainer.get('intelligence'));
+                
+                //self.set('combat', self.get('combat') + trainer.get('combat'));
+                self.set('magic', self.get('magic') + trainer.get('magic'));
+                
+                if(trainer.get('combat') > 0) {
+                    var high = Math.max(self.get('dexterity'), self.get('combat'));
+                    var low = Math.min(self.get('dexterity'), self.get('combat'));
+                    var rubberband = Math.ceil((high -  low) / 2);
+                    if(rubberband === 0) { rubberband = 1; }
+                    self.set('combat', self.get('combat') + rubberband);
+                }
+                
+                // Add trainer to statHistory.
+                self.updateStatHistory(trainer.get('name'));
+                
+                // add trainer to old list, to be removed
                 if(self.get('trainedWithList')[trainer.get('name')]) {
                     var currentCount = self.get('trainedWithList')[trainer.get('name')];
                     self.get('trainedWithList')[trainer.get('name')] = currentCount + 1;
@@ -234,32 +293,17 @@ var PartyMember = Backbone.Model.extend({
             } else {
                 console.log('not enought points');
             }
-        } else if(data[1] === 2) { // Right mouse click.
+        } else if(data[1] === 2) { // Right mouse click, untrain.
             if(self.get('trainedWithList')[trainer.get('name')]) {
-            
-                // untrain stat magic goes here
+                //restore current stats from history
+                
                 self.set('training', self.get('training') + trainer.get('train'));
-                var attributes = _.keys(trainer.attributes);
-                _.each(attributes, function(attribute) {
-                    if(!isNaN(self.get(attribute))) {
-                    
-                    //ignoring combat causing problems when untraining.
-                    //when dex is decremented by 2 (untraning with Bradman) combat is ignored, only dex is reset
-                    //combat is then reduced by the else statement by more than 2
-                    //may need to rejigger this to handle trainers with magic and combat separate from the others
-                    //only 4 of 18 trainers do not train either magic or combat
-                    
-                        if(attribute != 'combat') { //only dealing with combat rubber band effect for now.
-                            self.set(attribute, self.get(attribute) - trainer.get(attribute));
-                        } else {
-                            var high = Math.max(self.get('dexterity'), self.get('combat'));
-                            var low = Math.min(self.get('dexterity'), self.get('combat'));
-                            var rubberband = Math.floor((high -  low) / 2);
-                            if(rubberband === 0) { rubberband = 0; }
-                            self.set('combat', self.get('combat') - rubberband);
-                        }
-                    }
-                });
+                self.set('strength', self.get('strength') - trainer.get('strength'));
+                self.set('dexterity', self.get('dexterity') - trainer.get('dexterity'));
+                self.set('intelligence', self.get('intelligence') - trainer.get('intelligence'));
+
+                self.set('combat', self.get('combat') - trainer.get('combat'));
+                self.set('magic', self.get('magic') - trainer.get('magic'));
                 
                 // Remove trainer from list.
                 var currentCount = self.get('trainedWithList')[trainer.get('name')];
@@ -275,6 +319,7 @@ var PartyMember = Backbone.Model.extend({
     }
 });
 
+// Party Collection - Members in party are added to this collection.
 var Party = Backbone.Collection.extend({
     model: PartyMember,
     initialize: function() {
@@ -289,7 +334,7 @@ var Party = Backbone.Collection.extend({
     }
 });
 
-// Trainer NPC model.
+// Trainer Model.
 var Trainer = Backbone.Model.extend({
     initialize: function() {
         /*this.on('all', function(e) {
@@ -306,6 +351,7 @@ var Trainer = Backbone.Model.extend({
     }
 });
 
+// Trainer collection - all trainers are in this collection... for some reason.
 var Trainers = Backbone.Collection.extend({
     model: Trainer,
     initialize: function() {

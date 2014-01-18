@@ -174,16 +174,38 @@ var TrainerListView = Backbone.View.extend({
 
 // Map view.
 var MapView = Backbone.View.extend({
+    //this may help 
+    //http://stackoverflow.com/questions/10716478/making-a-backbone-js-view-to-draw-objects-on-a-canvas
     el: "#map",
     initialize: function(){
-        /*this.on('all', function(e) {
+        this.on('all', function(e) {
             console.log('Map View: ' + e);
-        });*/
+        });
     },
-    render: function(){
+    render: function() {
         var template = _.template($("#map-view").html());
         this.$el.html(template);
     },
+    canvas: function() {
+        return document.getElementById('dots');
+    },
+    context: function() {
+        this.canvas().height = $('#locater').height();
+        this.canvas().width = $('#locater').width();
+        return this.canvas().getContext('2d');
+    },
+    mapTrainer: function(centerX, centerY) {
+        
+        radius = 5;
+
+        this.context().beginPath();
+        this.context().arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        this.context().fillStyle = 'red';
+        this.context().fill();
+        this.context().lineWidth = 1;
+        this.context().strokeStyle = '#003300';
+        this.context().stroke();
+    }
 });
 
 

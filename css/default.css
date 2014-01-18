@@ -343,6 +343,10 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 background-color: #8dbdd8;
 }
 
+#trainerList h2 {
+    text-align: center;
+}
+
 #trainerList dl {
     background: #754404;
     border-radius: 0.1875em;
@@ -371,12 +375,26 @@ background-color: #8dbdd8;
     height: 0.5em;
 }
 
+#trainerList .light {
+    color: rgba(0, 0, 0, 0.5);
+}
+
 #map {
     text-align: center;
 }
 
+#map #locater {
+    position: relative;
+}
+
 #map img {
     width: 100%;
+}
+
+#map canvas {
+    left: 0;
+    position: absolute;
+    top: 0;
 }
 
 

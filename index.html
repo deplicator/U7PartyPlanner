@@ -12,16 +12,16 @@
     <div id="wrapper">
         <div id="notfooter">
             <h1>U7 Party Planner</h1>
-            <div id="memberView" class="grid half">
+            <div if="left" class="grid half">
                 <div id="memberChooser"></div>
                 <div id="member"></div>
                 <div id="memberList"></div>
-                <div id="map" class="grid"></div>
+                <div id="trainerList"></div>
             </div>
             
-            <div id="trainView" class="grid half">
+            <div id="right" class="grid half">
                 <div id="trainerSelect"></div>
-                <div id="trainerList"></div>
+                <div id="map"></div>
             </div>
         </div>
         <footer>
@@ -219,7 +219,7 @@
             <h2 class="tooltip" 
                 help="List of trainers to visit and which party members to train when you get 
                 there.">
-                Trainers to Visit
+                Trainer Checklist
             </h2>
             <% if(_.size(checklist) > 0) { %>
                 <dl>
@@ -229,7 +229,7 @@
                            if(times === 1) { %>
                                <dd><%= name %></dd>
                         <% } else { %>
-                               <dd><%= name %> x<%= times %></dd>
+                               <dd><%= name %> <span class="light">x<%= times %></span></dd>
                         <% } %>
                     <% }); %>
                     <div class=break></div>
@@ -244,7 +244,10 @@
             <h2 class="tooltip" help="Where to go.">
                 Map
             </h2>
-            <img src="images/map.jpg" />
+            <div id="locater">
+                <img src="images/map.png" />
+                <canvas id="dots" />
+            </div>
         </div>
     </script>
     

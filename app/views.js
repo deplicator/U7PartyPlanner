@@ -2,19 +2,18 @@
  * Views
  * 
  * ParentView
- * |-MemberChooserView
+ * |-ChooseMemberView
  * |-MemberView
- * |-MemberListView
- * |-TrainerAutoSelectView
- * |-TrainerManualSelectView
- * |-TrainerListView
+ * |-CurrentPartyView
+ * |-SelectTrainersView
+ * |-TrainerChecklistView
  * |-MapView
  *
  * Interesting discussion on where to render views: 
  * http://stackoverflow.com/questions/9271507/how-to-render-and-append-sub-views-in-backbone-js.
  */
  
-//Member Selection
+// Choose party member
 var MemberChooserView = Backbone.View.extend({
     el: '#memberChooser',
     initialize: function() {
@@ -34,7 +33,7 @@ var MemberChooserView = Backbone.View.extend({
     }
 });
 
-// Member view
+// Party Member view
 var MemberView = Backbone.View.extend({
     el: "#member",
     initialize: function(){
@@ -90,7 +89,7 @@ var MemberView = Backbone.View.extend({
     }
 });
 
-// Member List
+// Current Party
 //this should be changed to click to view, right click to dismiss
 var MemberListView = Backbone.View.extend({
     el: "#memberList",
@@ -115,10 +114,7 @@ var MemberListView = Backbone.View.extend({
     }
 });
  
-
-
-// Trainer Select view.
-//need to separate out table body and table header so table sorting stays put.
+// Select Trainer
 var TrainerSelectView = Backbone.View.extend({
     el: "#trainerSelect",
     initialize: function(){
@@ -128,8 +124,19 @@ var TrainerSelectView = Backbone.View.extend({
         this.listenTo(this.model, 'change', this.render);
     },
     render: function(){
-        var template = _.template($("#trainerSelect-view").html(), {trainers: trainers.toJSON(), character: this.model});
+        trainedWith = [];
+        _.each(this.model.get('statHistory'), function(object) { 
+            trainedWith.push(object.trainer);
+        });
+        
+        var template = _.template($("#trainerSelect-view").html(), { trainers: trainers.toJSON(),
+                                                                     character: this.model,
+                                                                     who: trainedWith });
         this.$el.html(template);
+        
+        //Would be nice if table didn't resort after clicking on a trainer. The only way I can think
+        //to do that is to save the current sort and then use the plug in options to sort the table
+        //the way it was before render was called. Would take some thinkin'.
         $(".sortable").tablesorter({sortInitialOrder: 'desc'});
     },
     events: {
@@ -141,9 +148,7 @@ var TrainerSelectView = Backbone.View.extend({
     }
 });
 
-
-
-// Trainer List view.
+// Trainer Checklist
 var TrainerListView = Backbone.View.extend({
     el: "#trainerList",
     initialize: function(){
@@ -155,15 +160,13 @@ var TrainerListView = Backbone.View.extend({
     render: function(){
         checklist = {};
         _.each(party.models, function(member) {
-            _.each(member.get('trainedWithList'), function(times, trainer) {
-                if(!checklist[trainer]) {
-                    checklist[trainer]= {};
-                }
-                checklist[trainer][member.get('name')] = times;
-            });
-            
-            
-            
+            var trainedTimes = _.size(member.get('statHistory'));
+
+                //for(var i = 1; i < trainedTimes; i++) {
+                //    console.log(member.get('statHistory')[i].trainer)
+                //}
+
+                
 
         });
         
@@ -172,7 +175,7 @@ var TrainerListView = Backbone.View.extend({
     }
 });
 
-// Map view.
+// Map
 var MapView = Backbone.View.extend({
     //this may help 
     //http://stackoverflow.com/questions/10716478/making-a-backbone-js-view-to-draw-objects-on-a-canvas
@@ -208,7 +211,7 @@ var MapView = Backbone.View.extend({
     }
 });
 
-
+// Parent View starts everything off.
 var ParentView = Backbone.View.extend({
     el: '#notfooter',
     initialize: function() {

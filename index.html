@@ -171,8 +171,9 @@
                     </thead>
                     <tbody>
                         <% _.each(trainers, function(trainer) { %>
-                            <tr id="trainer-<%= trainer.id %>" 
-                            <% if(_.include(_.keys(character.get("trainedWithList")), trainer.name)) { %>
+                            <tr id="trainer-<%= trainer.id %>"
+                            <% if(_.include(who, trainer.name)) { %>
+
                                 class="trained"
                             <% } %>
                             

@@ -246,6 +246,7 @@ var PartyMember = Backbone.Model.extend({
      * untrains with a previous trainer, subsequent training must also be undone. Using the previous
      * example, after training with Karenna and Markus, if the user untrains with Karenna they will
      * also be untrained with Markus.
+     * 
      * @param trainer string    Most recent trainer.
      */
         var self = this;
@@ -333,7 +334,7 @@ var PartyMember = Backbone.Model.extend({
         // Right mouse click to roll back training.
         } else if(data[1] === 2) { 
             
-            // Restore stats from history.
+            // Roll back stats from history.
             self.rollBackStatHistory(trainer.get('name'));
         }
     }
@@ -364,20 +365,7 @@ var Party = Backbone.Collection.extend({
         } else {
             this.theList[temp[lastTrainer].trainer].push(model.get('name'));
         }
-            
-        //for(var i = 1; i < _.size(temp); i++) {
-            
-            // for(var j = 1; j <= i; j++) {
-                // console.log(i + ' ' + j);
-            // }
-            // if(!this.theList[i]) {
-                // this.theList[i] = {};
-                // this.theList[i][temp[i].trainer] = [];
-                // this.theList[i][temp[i].trainer].push(model.get('name'));
-            // } else if(!_.contains(party.theList[1][temp[i].trainer], model.get('name'))) {
-                 // this.theList[i][temp[i].trainer].push(model.get('name'));
-            // }
-        //}
+
         
         
         

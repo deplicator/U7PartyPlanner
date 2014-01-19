@@ -264,7 +264,7 @@ var PartyMember = Backbone.Model.extend({
                 self.set('intelligence', self.get('statHistory')[i - 1].intelligence, {silent: true});
                 self.set('combat', self.get('statHistory')[i - 1].combat, {silent: true});
                 self.set('magic', self.get('statHistory')[i - 1].magic, {silent: true});
-                self.set('trainingCount', i);
+                self.set('trainingCount', i, {silent: true});
                 for(var j = i; j <= trains; j++) {
                     self.set('statHistory', _.omit(self.get('statHistory'), j.toString()), {silent: true});
                 }
@@ -273,7 +273,7 @@ var PartyMember = Backbone.Model.extend({
                 break;
             }
         }
-        this.trigger('change');
+        this.trigger('change', this);
     },
     trainWith: function(data) {
     /**
@@ -297,18 +297,20 @@ var PartyMember = Backbone.Model.extend({
         // Left mouse click trains.
         if(data[1] === 0) {
             if(self.get('training') >= trainer.get('train')) {
-                self.set('training', self.get('training') - trainer.get('train'));
-                self.set('strength', self.get('strength') + trainer.get('strength'));
-                self.set('dexterity', self.get('dexterity') + trainer.get('dexterity'));
-                self.set('intelligence', self.get('intelligence') + trainer.get('intelligence'));
+                self.set('training', self.get('training') - trainer.get('train'), {silent: true});
+                self.set('strength', self.get('strength') + trainer.get('strength'), {silent: true});
+                self.set('dexterity', self.get('dexterity') + trainer.get('dexterity'), {silent: true});
+                self.set('intelligence', self.get('intelligence') + trainer.get('intelligence'), {silent: true});
                 
+                //Rubber band effect needs to be tested, is this site right? 
+                //http://geocities.bootstrike.com/Ultima%20Thule!/u7train.html
                 // Deal with rubber band effect for combat.
                 if(trainer.get('combat') > 0) {
                     var high = Math.max(self.get('dexterity'), self.get('combat'));
                     var low = Math.min(self.get('dexterity'), self.get('combat'));
                     var rubberband = Math.ceil((high -  low) / 2);
                     if(rubberband === 0) { rubberband = 1; }
-                    self.set('combat', self.get('combat') + rubberband);
+                    self.set('combat', self.get('combat') + rubberband, {silent: true});
                 }
                 
                 // Deal with rubber band effect for magic.
@@ -317,7 +319,7 @@ var PartyMember = Backbone.Model.extend({
                     var low = Math.min(self.get('intelligence'), self.get('magic'));
                     var rubberband = Math.ceil((high -  low) / 2);
                     if(rubberband === 0) { rubberband = 1; }
-                    self.set('magic', self.get('magic') + rubberband);
+                    self.set('magic', self.get('magic') + rubberband, {silent: true});
                 }
                 
                 // Add trainer to statHistory.
@@ -353,11 +355,32 @@ var Party = Backbone.Collection.extend({
         });
     },
     checklist: function(model) {
-    //this is where you left off!
         temp = model.get('statHistory');
-        for(var i = 1; i < _.size(temp); i++) {
-            this.theList[i] = temp[i].trainer;
+        lastTrainer = _.size(temp) - 1;
+        if(!this.theList[temp[lastTrainer].trainer]) {
+            if(temp[lastTrainer].trainer != 'initial') {
+                this.theList[temp[lastTrainer].trainer] = [model.get('name')];
+            }
+        } else {
+            this.theList[temp[lastTrainer].trainer].push(model.get('name'));
         }
+            
+        //for(var i = 1; i < _.size(temp); i++) {
+            
+            // for(var j = 1; j <= i; j++) {
+                // console.log(i + ' ' + j);
+            // }
+            // if(!this.theList[i]) {
+                // this.theList[i] = {};
+                // this.theList[i][temp[i].trainer] = [];
+                // this.theList[i][temp[i].trainer].push(model.get('name'));
+            // } else if(!_.contains(party.theList[1][temp[i].trainer], model.get('name'))) {
+                 // this.theList[i][temp[i].trainer].push(model.get('name'));
+            // }
+        //}
+        
+        
+        
     }
 });
 

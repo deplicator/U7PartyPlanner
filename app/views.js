@@ -14,17 +14,8 @@
  */
  
 // Choose party member
-var MemberChooserView = Backbone.View.extend({
-    el: '#memberChooser',
-    initialize: function() {
-        /*this.on('all', function(e) {
-            console.log('Chooser View: ' + e);
-        });*/
-    },
-    render: function() {
-        var template = _.template($("#memberChooser-view").html());
-        this.$el.html(template);
-    },
+var ChooseMemberView = Backbone.View.extend({
+    el: '#chooseMember',
     events: {
         'change': 'triggerMemberChange',
     },
@@ -33,18 +24,18 @@ var MemberChooserView = Backbone.View.extend({
     }
 });
 
-// Party Member view
 var MemberView = Backbone.View.extend({
-    el: "#member",
+    el: '#member',
     initialize: function(){
-        /*this.on('all', function(e) {
-            console.log('Member View: ' + e);
-        });*/
+        
+        // Add this party member to collection when selected.
         party.add(this.model);
+        
+        // Update view on model changes.
         this.listenTo(this.model, 'change', this.render);
     },
     render: function(){
-        var template = _.template($("#member-view").html(), {character: this.model});
+        var template = _.template($('#member-view').html(), {character: this.model});
         this.$el.html(template);
     },
     events: {
@@ -54,7 +45,6 @@ var MemberView = Backbone.View.extend({
         'click #add': 'add',
         'click #reset': 'reset'
     },
-    
     changed: function(evt) {
         var value = parseInt($(evt.currentTarget).val(), 10);
         this.model.set($(evt.currentTarget).attr('id'), value);
@@ -89,27 +79,30 @@ var MemberView = Backbone.View.extend({
     }
 });
 
-// Current Party
-//this should be changed to click to view, right click to dismiss
-var MemberListView = Backbone.View.extend({
-    el: "#memberList",
+var CurrentPartyView = Backbone.View.extend({
+    el: '#currentParty',
     initialize: function() {
-        /*this.on('all', function(e) {
-            console.log('Member List View: ' + e);
-        });*/
         this.listenTo(party, 'all', this.render);
     },
     render: function(){
-        var template = _.template($("#memberList-view").html(), {party: party.toJSON()});
+        var template = _.template($('#currentParty-view').html(), {party: party.toJSON()});
         this.$el.html(template);
     },
     events: {
-        'click img': 'removeMember'
+        'mousedown img': 'swapOrRemove'
     },
-    removeMember: function(evt) {
-        if(evt.target.id != "Avatar") {
-            party.remove(party.getByName(evt.target.id));
-            this.trigger('memberRemove')
+    swapOrRemove: function(evt) {
+    
+        // Left click to swap to party member stats.
+        if(evt.button === 0) {
+            this.trigger('memberChange', evt.target.id);
+        
+        // Right click to dismiss party member.
+        } else if(evt.button === 2) {
+            if(evt.target.id != 'Avatar') {
+                party.remove(party.getByName(evt.target.id));
+                this.trigger('memberRemove')
+            }
         }
     }
 });
@@ -220,21 +213,21 @@ var ParentView = Backbone.View.extend({
         });*/
         
         // Views
-        this.memberChooser = new MemberChooserView();
+        this.chooseMember = new ChooseMemberView();
         this.member = new MemberView({model: Avatar});
-        this.memberList = new MemberListView();
+        this.currentParty = new CurrentPartyView();
         this.trainerSelect = new TrainerSelectView({model: Avatar});
         this.trainerList = new TrainerListView();
         this.map = new MapView();
 
         // Listeners
-        this.listenTo(this.memberChooser, "memberChange", this.memberChange);
-        this.listenTo(this.memberList, "memberRemove", this.memberRemove);
+        this.listenTo(this.chooseMember, "memberChange", this.memberChange);
+        this.listenTo(this.currentParty, "memberChange", this.memberChange);
+        this.listenTo(this.currentParty, "memberRemove", this.memberRemove);
     },
     render: function() {
-        this.memberChooser.render();
         this.member.render();
-        this.memberList.render();
+        this.currentParty.render();
         this.trainerSelect.render();
         this.trainerList.render();
         this.map.render();
@@ -247,6 +240,7 @@ var ParentView = Backbone.View.extend({
         this.trainerSelect = new TrainerSelectView({model: window[name]});
         this.member.render();
         this.trainerSelect.render();
+        $('#chooseMember').find('select').val(name);
     },
     memberRemove: function(id) {
         this.member.undelegateEvents();
@@ -255,6 +249,6 @@ var ParentView = Backbone.View.extend({
         this.trainerSelect = new TrainerSelectView({model: Avatar});
         this.member.render();
         this.trainerSelect.render();
-        $('#memberChooser').find('select').val('Avatar');
+        $('#chooseMember').find('select').val('Avatar');
     }
 });

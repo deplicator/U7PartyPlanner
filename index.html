@@ -13,9 +13,29 @@
         <div id="notfooter">
             <h1>Ultima VII Party Planner</h1>
             <div if="left" class="grid half">
-                <div id="memberChooser"></div>
+                <div id="chooseMember">
+                    <div class="inner-view">
+                        <h2 class="tooltip" 
+                            help="Selecting a party member will add them to your party. They can be dismissed by
+                            right clicking on them in the 'Current Party' box below.">
+                            Choose Party Member:
+                        </h2>
+                        <select>
+                            <option value="Avatar" selected>Avatar</option>
+                            <option value="Dupre">Dupre</option>
+                            <option value="Iolo">Iolo</option>
+                            <option value="Jaana">Jaana</option>
+                            <option value="Julia">Julia</option>
+                            <option value="Katrina">Katrina</option>
+                            <option value="Sentri">Sentri</option>
+                            <option value="Shamino">Shamino</option>
+                            <option value="Spark">Spark</option>
+                            <option value="Tseramed">Tseramed</option>
+                        </select>
+                    </div>
+                </div>
                 <div id="member"></div>
-                <div id="memberList"></div>
+                <div id="currentParty"></div>
                 <div id="trainerList"></div>
             </div>
             
@@ -30,28 +50,6 @@
             <a href="#">Credits</a>
         </footer>
     </div>
-    
-    <script type="text/html" id="memberChooser-view">
-        <div class="inner-view">
-            <h2 class="tooltip" 
-                help="Selecting a party member will add them to your party. They can be dismissed by
-                clicking on them in the 'Current Party' box below.">
-                Choose Party Member:
-            </h2>
-            <select>
-                <option value="Avatar" selected>Avatar</option>
-                <option value="Dupre">Dupre</option>
-                <option value="Iolo">Iolo</option>
-                <option value="Jaana">Jaana</option>
-                <option value="Julia">Julia</option>
-                <option value="Katrina">Katrina</option>
-                <option value="Sentri">Sentri</option>
-                <option value="Shamino">Shamino</option>
-                <option value="Spark">Spark</option>
-                <option value="Tseramed">Tseramed</option>
-            </select>
-        </div>
-    </script>
     
     <script type="text/html" id="member-view">
         <div class="inner-view">
@@ -142,10 +140,12 @@
         </div>
     </script>
     
-    <script type="text/html" id="memberList-view">
+    <script type="text/html" id="currentParty-view">
         <div class="inner-view">
-            <h2 class="tooltip" help="Represents selected party members to train. Click on a member to dismiss.">
-            Current Party</h2>
+            <h2 class="tooltip" 
+                help="Represents selected party members to train. Right click on a member to dismiss.">
+                Current Party
+            </h2>
             <% _.each(party, function(member) { %>
                 <img id="<%= member.name %>" src="images/<%= member.name.toLowerCase() %>-shape.png" />
             <% }); %>

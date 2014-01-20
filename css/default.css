@@ -193,16 +193,16 @@ dl {
     width: 80vw;
 }
 
-#memberChooser .inner-view {
+#chooseMember .inner-view {
     padding: 0.5em;
     text-align: center;
 }
 
-#memberChooser h2 {
+#chooseMember h2 {
     display: inline;
 }
 
-#memberChooser select {
+#chooseMember select {
     background: transparent;
     border: none;
     color: #EBEB00;
@@ -210,7 +210,7 @@ dl {
     text-shadow: 0.0625em 0.0625em #000;
 }
 
-#memberChooser option {
+#chooseMember option {
     background: #C0C0C0;
     color: #222;
 }
@@ -292,15 +292,15 @@ dl {
     cursor: default;
 }
 
-#memberList {
+#currentParty {
     text-align: center;
 }
 
-#memberList img {
-    cursor: no-drop;
+#currentParty img {
+    cursor: alias;
 }
 
-#memberList img:first-of-type {
+#currentParty img:first-of-type {
     padding: 4px 0 0 0;
 }
 

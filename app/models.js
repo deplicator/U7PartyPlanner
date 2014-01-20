@@ -193,7 +193,8 @@ var PartyMember = Backbone.Model.extend({
             }
         }
     },
-    reset: function() { //breaks untraining for some reason
+    reset: function() { 
+//[TODO] breaks untraining for some reason, I suspect it is related to the TODO in rollbackStathistory.
     /**
      * Reset party member stats and training data.
      */
@@ -254,6 +255,7 @@ var PartyMember = Backbone.Model.extend({
         for(var i = trains; i > 0; i--) {
         
             // Roll back training for each trainer.
+//[TODO] right clicking on any trainer behaves unexpectedly. Might need some validation the trainer being right clicked on hasClass('trained').
             var eachTrainer = self.get('statHistory')[i].trainer;
             var points = trainers.getByName(eachTrainer)[0].get('train');
             self.set('training', self.get('training') + points, {silent: true});
@@ -349,6 +351,9 @@ var Party = Backbone.Collection.extend({
             console.log('Party Collection: ' + e);
         });*/
         this.on('change', this.checklist, this);
+        
+//[TODO] on party member remove update theList!
+        
     },
     getByName: function(name){
         return this.filter(function(member) {
@@ -356,6 +361,7 @@ var Party = Backbone.Collection.extend({
         });
     },
     checklist: function(model) {
+//[TODO] right now it creates an object with trainer name as key and an array of the party members who trained with them. Order is not taken into account.
         temp = model.get('statHistory');
         lastTrainer = _.size(temp) - 1;
         if(!this.theList[temp[lastTrainer].trainer]) {
@@ -365,10 +371,6 @@ var Party = Backbone.Collection.extend({
         } else {
             this.theList[temp[lastTrainer].trainer].push(model.get('name'));
         }
-
-        
-        
-        
     }
 });
 
@@ -392,13 +394,14 @@ var Trainer = Backbone.Model.extend({
 // Trainer collection - all trainers are in this collection... for some reason.
 var Trainers = Backbone.Collection.extend({
     model: Trainer,
-    initialize: function() {
-        /*this.on('all', function(e) {
-            console.log('Trainer Collection: ' + e);
-        });*/
-    },
     getByName: function(name){
-        //this returns the model, but something is not right with it.
+        /** 
+         * Returns trainer model by name. To use the returned model append [0], for example:
+         *     temp = trainers.getByName('Chad');
+         *     temp[0].get('dexterity'); //returns 2
+         *
+         * @param name string  Trainer name is case sensitive.
+         */
         return this.filter(function(trainer) {
             return trainer.get('name') === name;
         });

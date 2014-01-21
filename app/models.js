@@ -358,16 +358,37 @@ var Party = Backbone.Collection.extend({
         });
     },
     checklist: function(model) {
-//[TODO] right now it creates an object with trainer name as key and an array of the party members who trained with them. Order is not taken into account.
-        temp = model.get('statHistory');
+        //console.log(model.get('statHistory'));
+//[TODO] finish this
+        var self = this;
+        temp = _.omit(model.get('statHistory'), '0');
+
+        _.each(temp, function(item, i) {
+            console.log(i + ': ' + item.trainer);
+            if(!self.theList[item.trainer]) {
+                self.theList[item.trainer] = [model.get('name')];
+            } else {
+                self.theList[item.trainer].push(model.get('name'));
+            }
+            _.each(self.theList, function(members, trainer) {
+                if(_.) {
+                    console.log('dunno');
+                }
+            });
+            
+        });
+
+        /*
         lastTrainer = _.size(temp) - 1;
-        if(!this.theList[temp[lastTrainer].trainer]) {
+        if(!self.theList[temp[lastTrainer].trainer]) {
             if(temp[lastTrainer].trainer != 'initial') {
-                this.theList[temp[lastTrainer].trainer] = [model.get('name')];
+                self.theList[temp[lastTrainer].trainer] = [model.get('name')];
             }
         } else {
-            this.theList[temp[lastTrainer].trainer].push(model.get('name'));
+            self.theList[temp[lastTrainer].trainer].push(model.get('name'));
         }
+        */
+        
     }
 });
 

@@ -6,4 +6,7 @@ Black Gate. For what it does, this is a complete overkill. The intention of this
 learning exercise (primarily backbone.js). What I thought was going to be a simple little program
 turned out to be complicated--for me anyway.
 
-There is a very small niche community of about five people that will find this useful.
+There is a very small niche community of about five people that might find this interesting but not
+terribly useful.
+
+Still some work to do, when it's done the project will be online.

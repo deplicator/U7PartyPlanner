@@ -194,7 +194,6 @@ var PartyMember = Backbone.Model.extend({
         }
     },
     reset: function() { 
-//[TODO] breaks untraining for some reason, I suspect it is related to the TODO in rollbackStathistory.
     /**
      * Reset party member stats and training data.
      */
@@ -208,9 +207,9 @@ var PartyMember = Backbone.Model.extend({
         self.set('exp', self.get('statHistory')[0].exp);
         self.set('level', self.get('statHistory')[0].level);
         self.set('training', self.get('statHistory')[0].training);
-        self.set('trainingCount', 0);
-        var nixTo = _.size(self.get('statHistory'));
-        for(var i = 1; i < nixTo; i++) {
+        self.set('trainingCount', 1);
+        nixTo = _.size(self.get('statHistory')) - 1;
+        for(var i = nixTo; i > 0; i--) {
             self.set('statHistory', _.omit(self.get('statHistory'), i.toString()));
         }
     },
@@ -255,7 +254,6 @@ var PartyMember = Backbone.Model.extend({
         for(var i = trains; i > 0; i--) {
         
             // Roll back training for each trainer.
-//[TODO] right clicking on any trainer behaves unexpectedly. Might need some validation the trainer being right clicked on hasClass('trained').
             var eachTrainer = self.get('statHistory')[i].trainer;
             var points = trainers.getByName(eachTrainer)[0].get('train');
             self.set('training', self.get('training') + points, {silent: true});
@@ -278,27 +276,26 @@ var PartyMember = Backbone.Model.extend({
         }
         this.trigger('change', this);
     },
-    trainWith: function(data) {
+    trainWith: function(id, button, trained) {
     /**
      * Updates party member model with trainer's information. Should be equivalent to training in
      * the game. The rubberband effect is calculated as half the absolute value of the difference
      * between the primary and secondary stat rounded up (or something close to that). Referenced 
      * from http://strategywiki.org/wiki/Ultima_VII:_The_Black_Gate/Trainers.
      *
-     * @param data array    Index zero is trainer model id, index one is mouse button number from
-     *                      click event. Right click is 0 and is used to train party member. Left
-     *                      click is 2 and used to roll back training (see rollBackStatHistory 
-     *                      function for details).
-     *
      * Needs more in game testing with rubberband effect. With 10 potential party members, 18
      * trainers, uncertain number of training points, and training order a factor: there are a lot 
      * of permutations.
+     *
+     * @param id        integer     Trainer model id
+     * @param button    integer     Mouse button clicked. Left click is 0, right click is 2.
+     * @param trained   bool        True allows for untraining.
      */
         var self = this;
-        var trainer = trainers.get(data[0]);
-        
+        var trainer = trainers.get(id);
+
         // Left mouse click trains.
-        if(data[1] === 0) {
+        if(button === 0) {
             if(self.get('training') >= trainer.get('train')) {
                 self.set('training', self.get('training') - trainer.get('train'), {silent: true});
                 self.set('strength', self.get('strength') + trainer.get('strength'), {silent: true});
@@ -334,7 +331,7 @@ var PartyMember = Backbone.Model.extend({
             }
  
         // Right mouse click to roll back training.
-        } else if(data[1] === 2) { 
+        } else if(button === 2 && trained) { 
             
             // Roll back stats from history.
             self.rollBackStatHistory(trainer.get('name'));

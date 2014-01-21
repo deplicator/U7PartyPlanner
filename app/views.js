@@ -137,7 +137,9 @@ var TrainerSelectView = Backbone.View.extend({
     },
     triggerTrainWith: function(evt) {
         var id = $(evt.target).parent().attr('id').split('-')[1];
-        this.model.trainWith([id, evt.button]);
+        var button = evt.button;
+        var trained = $(evt.target).parent().hasClass('trained');
+        this.model.trainWith(id, button, trained);
     }
 });
 
@@ -152,16 +154,16 @@ var TrainerListView = Backbone.View.extend({
     },
     render: function(){
         checklist = {};
-        _.each(party.models, function(member) {
+        /*_.each(party.models, function(member) {
             var trainedTimes = _.size(member.get('statHistory'));
 
-                //for(var i = 1; i < trainedTimes; i++) {
-                //    console.log(member.get('statHistory')[i].trainer)
-                //}
+                // for(var i = 1; i < trainedTimes; i++) {
+                   // console.log(member.get('statHistory')[i].trainer)
+                // }
 
                 
 
-        });
+        });*/
         
         var template = _.template($("#trainerList-view").html(), {checklist: checklist});
         this.$el.html(template);

@@ -59,16 +59,28 @@ body {
 }
 
 h1 {
-    color: #0007BD;
-    font-size: 4em;
-    text-align: center;
-    font-family: 'Avatar';
+    color: #FFEF00;
+    font-size: 3em;
+    font-family: "Comic Sans MS", cursive, sans-serif; /* how could you? */
     font-weight: 400;
     margin: 0;
-    text-shadow: -1px -1px 0 #C0C0C0,  
-                 1px -1px 0 #C0C0C0,
-                 -1px 1px 0 #C0C0C0,
-                 1px 1px 0 #C0C0C0;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #272727, -1px 1px 0 #353535, 1px 1px 0 #252525;
+    position: relative;
+    height: 1.5em;
+}
+
+h1 img {
+    position: absolute;
+    height: 1em;
+    z-index: 0;
+    margin: 0.45em 0 0 1em;
+}
+
+h1 span {
+    position: absolute;
+    z-index: 1;
+    margin: .15em 0 0 0;
+    left: 7em;
 }
 
 h2 {

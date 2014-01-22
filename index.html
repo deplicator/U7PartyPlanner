@@ -226,11 +226,11 @@
                 <dl>
                 <% _.each(checklist, function(member, trainer) { %>
                     <dt><%= trainer %></dt>
-                    <% _.each(member, function(times, name) { 
-                           if(times === 1) { %>
+                    <% _.each(member, function(name) { 
+                           if(true) { %>
                                <dd><%= name %></dd>
                         <% } else { %>
-                               <dd><%= name %> <span class="light">x<%= times %></span></dd>
+                               <dd><%= name %> <span class="light">x<%= wut %></span></dd>
                         <% } %>
                     <% }); %>
                     <div class=break></div>

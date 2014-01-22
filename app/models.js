@@ -344,13 +344,7 @@ var Party = Backbone.Collection.extend({
     model: PartyMember,
     theList: new Object(),
     initialize: function() {
-        /*this.on('all', function(e) {
-            console.log('Party Collection: ' + e);
-        });*/
-        this.on('change', this.checklist, this);
-        
-//[TODO] on party member remove update theList!
-        
+        this.on('change remove', this.checklist, this);
     },
     getByName: function(name){
         return this.filter(function(member) {
@@ -358,37 +352,20 @@ var Party = Backbone.Collection.extend({
         });
     },
     checklist: function(model) {
-        //console.log(model.get('statHistory'));
-//[TODO] finish this
-        var self = this;
-        temp = _.omit(model.get('statHistory'), '0');
-
-        _.each(temp, function(item, i) {
-            console.log(i + ': ' + item.trainer);
-            if(!self.theList[item.trainer]) {
-                self.theList[item.trainer] = [model.get('name')];
-            } else {
-                self.theList[item.trainer].push(model.get('name'));
-            }
-            _.each(self.theList, function(members, trainer) {
-                if(_.) {
-                    console.log('dunno');
+        /**
+         * Seems horribly inefficient, but it is simple and works.
+         */
+        var temp ={};
+        _.each(this.models, function (model) {
+            _.each(_.omit(model.get('statHistory'), '0'), function (item, i) {
+                if(!temp[item.trainer]) {
+                    temp[item.trainer] = [model.get('name')];
+                } else {
+                    temp[item.trainer].push(model.get('name'));
                 }
             });
-            
         });
-
-        /*
-        lastTrainer = _.size(temp) - 1;
-        if(!self.theList[temp[lastTrainer].trainer]) {
-            if(temp[lastTrainer].trainer != 'initial') {
-                self.theList[temp[lastTrainer].trainer] = [model.get('name')];
-            }
-        } else {
-            self.theList[temp[lastTrainer].trainer].push(model.get('name'));
-        }
-        */
-        
+        this.theList = temp;
     }
 });
 

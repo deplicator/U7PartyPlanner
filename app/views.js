@@ -129,7 +129,7 @@ var TrainerSelectView = Backbone.View.extend({
         
         //Would be nice if table didn't resort after clicking on a trainer. The only way I can think
         //to do that is to save the current sort and then use the plug in options to sort the table
-        //the way it was before render was called. Would take some thinkin'.
+        //the way it was before render was called. Would take some thinking.
         $(".sortable").tablesorter({sortInitialOrder: 'desc'});
     },
     events: {
@@ -153,19 +153,7 @@ var TrainerListView = Backbone.View.extend({
         this.listenTo(party, 'change', this.render);
     },
     render: function(){
-        checklist = {};
-        /*_.each(party.models, function(member) {
-            var trainedTimes = _.size(member.get('statHistory'));
-
-                // for(var i = 1; i < trainedTimes; i++) {
-                   // console.log(member.get('statHistory')[i].trainer)
-                // }
-
-                
-
-        });*/
-        
-        var template = _.template($("#trainerList-view").html(), {checklist: checklist});
+        var template = _.template($("#trainerList-view").html(), {checklist: party.theList});
         this.$el.html(template);
     }
 });

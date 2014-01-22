@@ -173,7 +173,6 @@
                         <% _.each(trainers, function(trainer) { %>
                             <tr id="trainer-<%= trainer.id %>"
                             <% if(_.include(who, trainer.name)) { %>
-
                                 class="trained"
                             <% } %>
                             
@@ -226,11 +225,11 @@
                 <dl>
                 <% _.each(checklist, function(member, trainer) { %>
                     <dt><%= trainer %></dt>
-                    <% _.each(member, function(name) { 
-                           if(true) { %>
+                    <% _.each(member, function(times, name) {
+                           if(times === 1) { %>
                                <dd><%= name %></dd>
                         <% } else { %>
-                               <dd><%= name %> <span class="light">x<%= wut %></span></dd>
+                               <dd><%= name %> <span class="light">x<%= times %></span></dd>
                         <% } %>
                     <% }); %>
                     <div class=break></div>

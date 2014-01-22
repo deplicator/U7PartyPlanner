@@ -355,13 +355,16 @@ var Party = Backbone.Collection.extend({
         /**
          * Seems horribly inefficient, but it is simple and works.
          */
-        var temp ={};
+        temp ={};
         _.each(this.models, function (model) {
             _.each(_.omit(model.get('statHistory'), '0'), function (item, i) {
                 if(!temp[item.trainer]) {
-                    temp[item.trainer] = [model.get('name')];
+                    temp[item.trainer] = {};
+                }
+                if(!temp[item.trainer][model.get('name')]) {
+                    temp[item.trainer][model.get('name')] = 1;
                 } else {
-                    temp[item.trainer].push(model.get('name'));
+                    temp[item.trainer][model.get('name')] += 1;
                 }
             });
         });

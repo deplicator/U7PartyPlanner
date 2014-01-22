@@ -6,11 +6,8 @@
 }
 
 @font-face {
-    font-family: 'Avatar';
-    src: url('../fonts/Avatar.eot');
-    src: url('../fonts/Avatar.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+    font-family: 'Cloister Black';
+    src: url(../fonts/cloisterblack.ttf);
 }
 
 @font-face {
@@ -22,16 +19,6 @@
          url('../fonts/ophidean_runes.svg#ophidean_runesnormal') format('svg');
     font-weight: normal;
     font-style: normal;
-}
-
-@font-face {
-    font-family: 'Cloister Black';
-    src: url(../fonts/cloisterblack.ttf);
-}
-
-@font-face {
-    font-family: 'Britannian Runes';
-    src: url(../fonts/runes.ttf) format('truetype');
 }
 
 *, *:after, *:before {

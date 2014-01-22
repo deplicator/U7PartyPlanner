@@ -10,3 +10,11 @@ There is a very small niche community of about five people that might find this 
 terribly useful.
 
 Still some work to do, when it's done the project will be online.
+
+
+references
+----------
+http://infinitron.nullneuron.net/u7char.html
+http://strategywiki.org/wiki/Ultima_VII:_The_Black_Gate/Trainers
+http://www.ultimainfo.net/Maps/U7Maps.htm
+http://geocities.bootstrike.com/Ultima%20Thule!/u7train.html

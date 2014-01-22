@@ -351,9 +351,10 @@ var Party = Backbone.Collection.extend({
             return member.get('name') === name;
         });
     },
-    checklist: function(model) {
+    checklist: function() {
         /**
-         * Seems horribly inefficient, but it is simple and works.
+         * Seems horribly inefficient, but it is simple and works. Does not account for training 
+         * order yet.
          */
         temp ={};
         _.each(this.models, function (model) {

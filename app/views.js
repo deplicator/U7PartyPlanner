@@ -13,7 +13,6 @@
  * http://stackoverflow.com/questions/9271507/how-to-render-and-append-sub-views-in-backbone-js.
  */
  
-// Choose party member
 var ChooseMemberView = Backbone.View.extend({
     el: '#chooseMember',
     events: {
@@ -107,13 +106,9 @@ var CurrentPartyView = Backbone.View.extend({
     }
 });
  
-// Select Trainer
-var TrainerSelectView = Backbone.View.extend({
-    el: "#trainerSelect",
+var SelectTrainerView = Backbone.View.extend({
+    el: "#selectTrainer",
     initialize: function(){
-        /*this.on('all', function(e) {
-            console.log('Trainer Select View: ' + e);
-        });*/
         this.listenTo(this.model, 'change', this.render);
     },
     render: function(){
@@ -122,7 +117,7 @@ var TrainerSelectView = Backbone.View.extend({
             trainedWith.push(object.trainer);
         });
         
-        var template = _.template($("#trainerSelect-view").html(), { trainers: trainers.toJSON(),
+        var template = _.template($("#selectTrainer-view").html(), { trainers: trainers.toJSON(),
                                                                      character: this.model,
                                                                      who: trainedWith });
         this.$el.html(template);
@@ -143,22 +138,17 @@ var TrainerSelectView = Backbone.View.extend({
     }
 });
 
-// Trainer Checklist
-var TrainerListView = Backbone.View.extend({
-    el: "#trainerList",
+var TrainerChecklistView = Backbone.View.extend({
+    el: "#trainerChecklist",
     initialize: function(){
-        /*this.on('all', function(e) {
-            console.log('Trainer List View: ' + e);
-        });*/
-        this.listenTo(party, 'change', this.render);
+        this.listenTo(party, 'change remove', this.render);
     },
     render: function(){
-        var template = _.template($("#trainerList-view").html(), {checklist: party.theList});
+        var template = _.template($("#trainerChecklist-view").html(), {checklist: party.theList});
         this.$el.html(template);
     }
 });
 
-// Map
 var MapView = Backbone.View.extend({
     //this may help 
     //http://stackoverflow.com/questions/10716478/making-a-backbone-js-view-to-draw-objects-on-a-canvas
@@ -194,20 +184,18 @@ var MapView = Backbone.View.extend({
     }
 });
 
-// Parent View starts everything off.
+
+// Parent View starts app.
 var ParentView = Backbone.View.extend({
     el: '#notfooter',
     initialize: function() {
-        /*this.on('all', function(e) {
-            console.log('Parent View: ' + e);
-        });*/
-        
+
         // Views
         this.chooseMember = new ChooseMemberView();
         this.member = new MemberView({model: Avatar});
         this.currentParty = new CurrentPartyView();
-        this.trainerSelect = new TrainerSelectView({model: Avatar});
-        this.trainerList = new TrainerListView();
+        this.selectTrainer = new SelectTrainerView({model: Avatar});
+        this.trainerChecklist = new TrainerChecklistView();
         this.map = new MapView();
 
         // Listeners
@@ -218,27 +206,27 @@ var ParentView = Backbone.View.extend({
     render: function() {
         this.member.render();
         this.currentParty.render();
-        this.trainerSelect.render();
-        this.trainerList.render();
+        this.selectTrainer.render();
+        this.trainerChecklist.render();
         this.map.render();
         return this;
     },
     memberChange: function(name) {
         this.member.undelegateEvents();
-        this.trainerSelect.undelegateEvents();
+        this.selectTrainer.undelegateEvents();
         this.member = new MemberView({model: window[name]}); //get by id would be more appropriate
-        this.trainerSelect = new TrainerSelectView({model: window[name]});
+        this.selectTrainer = new SelectTrainerView({model: window[name]});
         this.member.render();
-        this.trainerSelect.render();
+        this.selectTrainer.render();
         $('#chooseMember').find('select').val(name);
     },
     memberRemove: function(id) {
         this.member.undelegateEvents();
-        this.trainerSelect.undelegateEvents();
+        this.selectTrainer.undelegateEvents();
         this.member = new MemberView({model: Avatar});
-        this.trainerSelect = new TrainerSelectView({model: Avatar});
+        this.selectTrainer = new TrainerSelectView({model: Avatar});
         this.member.render();
-        this.trainerSelect.render();
+        this.selectTrainer.render();
         $('#chooseMember').find('select').val('Avatar');
     }
 });

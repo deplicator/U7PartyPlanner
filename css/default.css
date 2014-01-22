@@ -11,6 +11,17 @@
 }
 
 @font-face {
+    font-family: 'Britannian Runes';
+    src: url('../fonts/britannian_runes_ii-webfont.eot');
+    src: url('../fonts/britannian_runes_ii-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/britannian_runes_ii-webfont.woff') format('woff'),
+         url('../fonts/britannian_runes_ii-webfont.ttf') format('truetype'),
+         url('../fonts/britannian_runes_ii-webfont.svg#britannian_runes_iiregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'Ophidean Runes';
     src: url('../fonts/ophidean_runes.eot');
     src: url('../fonts/ophidean_runes.eot?#iefix') format('embedded-opentype'),
@@ -303,54 +314,54 @@ dl {
     padding: 4px 0 0 0;
 }
 
-#trainerSelect {
+#selectTrainer {
 text-align: center;
 }
 
-#trainerSelect #trainers {
+#selectTrainer #trainers {
     background: #754404;
     border-radius: 0.1875em;
     padding: 0.5em;
 }
 
-#trainerSelect table {
+#selectTrainer table {
     border-collapse: collapse;
     width: 100%;
 }
 
-#trainerSelect thead th {
+#selectTrainer thead th {
     cursor: pointer;
 }
 
-#trainerSelect tbody tr {
+#selectTrainer tbody tr {
     background: #8B7366;
     border-left: 1px solid #333;
     border-right: 1px solid #333;
     cursor: alias;
 }
 
-#trainerSelect tbody tr:nth-child(odd) {
+#selectTrainer tbody tr:nth-child(odd) {
     background: #7D6559;
     border: 1px solid #333;
 }
 
-#trainerSelect tbody tr:last-of-type {
+#selectTrainer tbody tr:last-of-type {
     border-bottom: 1px solid #333;
 }
 
-#trainerSelect tbody tr:hover {
+#selectTrainer tbody tr:hover {
     background: rgba(255, 255, 255, 0.50);
 }
 
-#trainerSelect td {
+#selectTrainer td {
     border-right: 1px solid #333;
     min-width: 2.1em;
     padding: 0.125em 0.25em;
     text-align: center;
 }
 
-#trainerSelect td:nth-child(1),
-#trainerSelect th:nth-child(1) {
+#selectTrainer td:nth-child(1),
+#selectTrainer th:nth-child(1) {
     text-align: left;
 }
 
@@ -374,18 +385,18 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 background-color: #8dbdd8;
 }
 
-#trainerList h2 {
+#trainerChecklist h2 {
     text-align: center;
 }
 
-#trainerList dl {
+#trainerChecklist dl {
     background: #754404;
     border-radius: 0.1875em;
     font-size: 1em;
     padding: 0.5em 0.5em 0 0.5em;
 }
 
-#trainerList dl dt {
+#trainerChecklist dl dt {
     background: #7D6559;
     border: 1px solid #333;
     border-bottom: none;
@@ -393,7 +404,7 @@ background-color: #8dbdd8;
     padding: 0 0.625em;
 }
 
-#trainerList dl dd {
+#trainerChecklist dl dd {
     background: #8B7366;
     border-left: 1px solid #333;
     border-right: 1px solid #333;
@@ -401,12 +412,12 @@ background-color: #8dbdd8;
     margin: 0;
 }
 
-#trainerList .break {
+#trainerChecklist .break {
     border-top: 1px solid #333;
     height: 0.5em;
 }
 
-#trainerList .light {
+#trainerChecklist .light {
     color: rgba(0, 0, 0, 0.5);
 }
 

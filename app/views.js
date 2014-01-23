@@ -14,23 +14,37 @@
  */
  
 var ChooseMemberView = Backbone.View.extend({
+    /**
+     * This view triggers the change in the Choose Party Member drop-down. It doesn't need a
+     * template. It probably doesn't even need a view, but this is how it ended up.
+     */
     el: '#chooseMember',
     events: {
         'change': 'triggerMemberChange',
     },
     triggerMemberChange: function(evt) {
+        /**
+         * Triggers the change in member.
+         *
+         * @param evt object    Click event object value gets passed in trigger, it will be the 
+         *                      party member's name.
+         */
         this.trigger("memberChange", evt.target.value);
     }
 });
 
 var MemberView = Backbone.View.extend({
+    /**
+     * View that shows and allows changes to each party member. It also gets updated with selected
+     * trainers.
+     */
     el: '#member',
     initialize: function(){
         
-        // Add this party member to collection when selected.
+        // Add this member to party collection when selected.
         party.add(this.model);
         
-        // Update view on model changes.
+        // Listener updates this view on model changes.
         this.listenTo(this.model, 'change', this.render);
     },
     render: function(){
@@ -74,6 +88,9 @@ var MemberView = Backbone.View.extend({
         }
     },
     reset: function() {
+        /**
+         * Reset button resets the model.
+         */
         this.model.reset();
     }
 });
@@ -108,11 +125,13 @@ var CurrentPartyView = Backbone.View.extend({
  
 var SelectTrainerView = Backbone.View.extend({
     el: "#selectTrainer",
-    initialize: function(){
+    initialize: function() {
+    
+        // Listeners
         this.listenTo(this.model, 'change', this.render);
     },
-    render: function(){
-        trainedWith = [];
+    render: function() {
+        var trainedWith = [];
         _.each(this.model.get('statHistory'), function(object) { 
             trainedWith.push(object.trainer);
         });
@@ -122,9 +141,9 @@ var SelectTrainerView = Backbone.View.extend({
                                                                      who: trainedWith });
         this.$el.html(template);
         
-        //Would be nice if table didn't resort after clicking on a trainer. The only way I can think
-        //to do that is to save the current sort and then use the plug in options to sort the table
-        //the way it was before render was called. Would take some thinking.
+        //[TODO] Fix table resorting after render(). 
+        //The only way I can think to do that is to save the current sort and then use the plug in 
+        //options to sort the table the way it was before render was called.
         $(".sortable").tablesorter({sortInitialOrder: 'desc'});
     },
     events: {

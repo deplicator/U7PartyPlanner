@@ -365,34 +365,20 @@ text-align: center;
     text-align: left;
 }
 
-/* sortable tables */
-table.tablesorter tbody td {
-	color: #3D3D3D;
-	padding: 4px;
-	background-color: #FFF;
-	vertical-align: top;
-}
-table.tablesorter tbody tr.odd td {
-	background-color:#F0F0F6;
-}
-table.tablesorter thead tr .headerSortUp {
-	background-image: url(asc.gif);
-}
-table.tablesorter thead tr .headerSortDown {
-	background-image: url(desc.gif);
-}
-table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
-background-color: #8dbdd8;
-}
-
 #trainerChecklist h2 {
     text-align: center;
+}
+
+#trainerChecklist p {
+    color: #DFDFDF;
+    margin: 0;
+    text-align: right;
 }
 
 #trainerChecklist dl {
     background: #754404;
     border-radius: 0.1875em;
-    font-size: 1em;
+    font-size: 1.1em;
     padding: 0.5em 0.5em 0 0.5em;
 }
 
@@ -419,6 +405,7 @@ background-color: #8dbdd8;
 
 #trainerChecklist .light {
     color: rgba(0, 0, 0, 0.5);
+    font-size: 0.8em;
 }
 
 #map {

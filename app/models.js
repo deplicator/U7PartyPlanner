@@ -1,10 +1,14 @@
 // Party Member model.
 var PartyMember = Backbone.Model.extend({
     initialize: function () {
+    
+        // Model setup methods
         this.calcHits();
         this.calcLevel('exp');
         this.initialStats = _.clone(this.attributes);
         this.updateStatHistory('initial', _.clone(this.attributes));
+        
+        // Listeners
         this.on('change:strength', this.calcHits, this);
         this.on('change:dexterity', this.calcCombat, this);
         //The link between Intelligence and Magic is indicated in the manual, but not in the game.
@@ -19,13 +23,20 @@ var PartyMember = Backbone.Model.extend({
      * http://stackoverflow.com/questions/6433795/backbone-js-handling-of-attributes-that-are-arrays
      */
         return {
-            magic: 0,
+            magic: 0,                   // Only the Avatar has these stats, so all others are zero.
             mana: 0,
-            trainingCount: 0,
-            statHistory: new Object()
+            statHistory: new Object(),  // History of training and order.
+            trainingCount: 0            // Next number for training order.
         };
     },
     calcLevel: function(base) {
+        /**
+         * These ridiculous switch statements make calculating level or minimum experience possible.
+         * 
+         * @param base string   If the base is 'exp' the method calculates what the level would be.
+         *                      If the base is anything else the method calculates the minimum 
+         *                      experience for current level.
+         */
         if(base == 'exp') {
             var exp = this.get('exp');
             switch(true) {
@@ -135,33 +146,57 @@ var PartyMember = Backbone.Model.extend({
         }
     },
     calcTraining: function() {
+        /**
+         * Training points change with level ups or downs.
+         */
         var oldLevel = this.previous('level');
         var newLevel = this.get('level');
         var difference = newLevel - oldLevel;
         this.set('training', this.get('training') + (difference * 3));
     },
     calcHits: function() {
+        /**
+         * Hits are always equal to strength. No matter what!
+         */
         this.set('hits', this.get('strength'));
     },
     calcCombat: function() {
+        /**
+         * Combat is linked to dexterity changes.
+         */
         var oldDexterity = this.previous('dexterity');
         var newDexterity = this.get('dexterity');
         var difference = newDexterity - oldDexterity;
         this.set('combat', this.get('combat') + difference);
     },
     calcMagic: function() {
+        /**
+         * Magic is linked to intelligence changes.
+         */
         var oldIntelligence = this.previous('intelligence');
         var newIntelligence = this.get('intelligence');
         var difference = newIntelligence - oldIntelligence;
         this.set('magic', this.get('magic') + difference);
     },
     calcMana: function() {
+        /**
+         * Mana is always equal to magic. Whether you like it or not!
+         */
         var oldMagic = this.previous('magic');
         var newMagic = this.get('magic');
         var difference = newMagic - oldMagic;
         this.set('mana', this.get('mana') + difference);
     },
     rangeCheck: function(attribute) {
+        /**
+         * This method works two ways. If no attribute is provided it will range check all model
+         * attributes and change them to min or max if they are out of their possible range (many
+         * attributes have a specific range).
+         * If an attribute is provided the method returns true or false if that attribute is out of
+         * its range. This is used to enable or disable the + and - buttons in the member view.
+         *
+         * @param attribute [string]    Attribute to range check.
+         */
         if(arguments.length === 0) {
             var original = this.initialStats;
             var keys = _.keys(original);
@@ -217,6 +252,7 @@ var PartyMember = Backbone.Model.extend({
     /**
      * Updates statHistory object with each trainer so training can be undone. Originally attempted
      * to calculate the rubberband effect in reverse, but it's not possible on subsequent trains.
+     *
      * @param trainer string    Most recent trainer.
      */
         var self = this;
@@ -302,7 +338,7 @@ var PartyMember = Backbone.Model.extend({
                 self.set('dexterity', self.get('dexterity') + trainer.get('dexterity'), {silent: true});
                 self.set('intelligence', self.get('intelligence') + trainer.get('intelligence'), {silent: true});
                 
-                //Rubber band effect needs to be tested, is this site right? 
+                //Rubber band effect needs to be tested, is this site right? if it is I need some tweaks
                 //http://geocities.bootstrike.com/Ultima%20Thule!/u7train.html
                 // Deal with rubber band effect for combat.
                 if(trainer.get('combat') > 0) {
@@ -327,7 +363,7 @@ var PartyMember = Backbone.Model.extend({
 
             } else {
                 //maybe some kind of message one day.
-                console.log('not enought training points');
+                console.log('not enough training points');
             }
  
         // Right mouse click to roll back training.
@@ -339,24 +375,48 @@ var PartyMember = Backbone.Model.extend({
     }
 });
 
-// Party Collection - Members in party are added to this collection.
 var Party = Backbone.Collection.extend({
+    /**
+     * When a member is chosen from the Choose Party Member drop-down, they are considered to be in
+     * the party and added to this collection. They are removed by right clicking on them in the 
+     * Current Party box.
+     * 
+     * I debated on whether the training cost calculations should be here or in the trainers 
+     * collection. In the end it made sense to go here because the training cost is only effected
+     * by the current party members.
+     */
     model: PartyMember,
-    theList: new Object(),
+    checklist: new Object(),    // Passed to trainer checklist view showing who gets trained by who.
+    trainingCost: new Object(), // Passed to trainer checklist view showing training costs.
     initialize: function() {
-        this.on('change remove', this.checklist, this);
+    
+        // Listeners
+        this.on('change remove', this.createChecklist, this);
+        this.on('change remove', this.totalTrainingCost, this);
     },
     getByName: function(name){
+        /** 
+         * Returns party member model by name. Found this somewhere on stackoverflow, if I find it 
+         * again I'll put the link here. I don't think this method is used.
+         * To use the returned model append [0], for example:
+         *     temp = party.getByName('Iolo');
+         *     temp[0].get('hits'); //returns 18 on unchanged Iolo model
+         * 
+         * @param name string  Trainer name is case sensitive.
+         */
         return this.filter(function(member) {
             return member.get('name') === name;
         });
     },
-    checklist: function() {
+    createChecklist: function() {
         /**
-         * Seems horribly inefficient, but it is simple and works. Does not account for training 
-         * order yet.
+         * Creates the checklist based on current party members and who they have been selected to 
+         * train with. Seems horribly inefficient, but it is simple and works.
+         *
+         * [TODO] Account for training order. See comment block in PartyMember model under the 
+         * rollBackStatsHistory method about why training order is important.
          */
-        temp ={};
+        temp = {};
         _.each(this.models, function (model) {
             _.each(_.omit(model.get('statHistory'), '0'), function (item, i) {
                 if(!temp[item.trainer]) {
@@ -369,19 +429,56 @@ var Party = Backbone.Collection.extend({
                 }
             });
         });
-        this.theList = temp;
+        this.checklist = temp;
+    },
+    trainingCostPerTrainer: function(trainer) {
+        /**
+         * Totals training cost for a single trainer across all party members. This method is only 
+         * called from total training cost calculation.
+         *
+         * @param trainer string    Case sensitive trainer name.
+         */
+        var trains = 0;
+        _.each(this.checklist[trainer], function(value) {
+            trains += value;
+        });
+        return trains * trainers.getByName(trainer)[0].get('cost');
+    },
+    totalTrainingCost: function() {
+        /**
+         * Uses individual training cost calculations to total what it would cost to train every 
+         * party member at every trainer chosen. This is updated when any party member model in this
+         * collection is updated.
+         */
+        var self = this;
+        var temp = {};
+        temp['total'] = 0;
+        _.each(this.checklist, function(value, key) {
+            var individualCost = self.trainingCostPerTrainer(key);
+            temp['total'] += individualCost;
+            temp[key] = individualCost;
+        });
+        self.trainingCost = temp;
     }
 });
 
-// Trainer Model.
 var Trainer = Backbone.Model.extend({
+    /**
+     * Model for each trainer. It doesn't do much and I debated not even having a model. May be 
+     * useful for future expansion.
+     */
     initialize: function() {
-        /*this.on('all', function(e) {
-            console.log('Trainer model: ' + e);
-        });*/
         this.calcValue();
     },
     calcValue: function() {
+        /**
+         * Calculates the value of a trainer based on the stat gains per training point used. This
+         * was originally part of an auto-train method I had where you could choose a stat to focus
+         * on and the app would select optimal training for you. The idea was abandon, not only 
+         * because it was difficult to implement but there are many opinions on how to train a 
+         * character. In the end I decided to just let the user decide. These might be used in
+         * future calculations that help the user pick trainers.
+         */
         var totalTraining = this.get('strength') + (this.get('dexterity') * 2) + this.get('intelligence') + this.get('combat') + this.get('magic');
         var value = totalTraining / this.get('train');
         var costValue = value / this.get('cost');
@@ -390,15 +487,21 @@ var Trainer = Backbone.Model.extend({
     }
 });
 
-// Trainer collection - all trainers are in this collection... for some reason.
 var Trainers = Backbone.Collection.extend({
+    /**
+     * If I wasn't sure I needed a trainer model, I really didn't need a collection. Here is is
+     * anyway. All trainer models are added to the collection on creation (at the bottom of the
+     * trainers.js file).
+     */
     model: Trainer,
     getByName: function(name){
         /** 
-         * Returns trainer model by name. To use the returned model append [0], for example:
+         * Returns trainer model by name. Found this somewhere on stackoverflow, if I find it again
+         * I'll put the link here.
+         * To use the returned model append [0], for example:
          *     temp = trainers.getByName('Chad');
          *     temp[0].get('dexterity'); //returns 2
-         *
+         * 
          * @param name string  Trainer name is case sensitive.
          */
         return this.filter(function(trainer) {
@@ -406,3 +509,32 @@ var Trainers = Backbone.Collection.extend({
         });
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

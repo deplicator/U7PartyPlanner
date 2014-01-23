@@ -144,7 +144,8 @@ var TrainerChecklistView = Backbone.View.extend({
         this.listenTo(party, 'change remove', this.render);
     },
     render: function(){
-        var template = _.template($("#trainerChecklist-view").html(), {checklist: party.theList});
+        var template = _.template($("#trainerChecklist-view").html(), {checklist: party.checklist,
+                                                                       trainingCost: party.trainingCost });
         this.$el.html(template);
     }
 });

@@ -14,7 +14,7 @@ Still some work to do, when it's done the project will be online.
 
 references
 ----------
-http://infinitron.nullneuron.net/u7char.html
-http://strategywiki.org/wiki/Ultima_VII:_The_Black_Gate/Trainers
-http://www.ultimainfo.net/Maps/U7Maps.htm
-http://geocities.bootstrike.com/Ultima%20Thule!/u7train.html
+[Starting stats for all party members.](http://infinitron.nullneuron.net/u7char.html)
+[Trainer's stats and explination of 'rubberband effect'.](http://strategywiki.org/wiki/Ultima_VII:_The_Black_Gate/Trainers)
+[Trainer specific formulas.](http://geocities.bootstrike.com/Ultima%20Thule!/u7train.html)
+[A nice U7 map.](http://www.ultimainfo.net/Maps/U7Maps.htm)

@@ -148,7 +148,9 @@
                 Current Party
             </h2>
             <% _.each(party, function(member) { %>
-                <img id="<%= member.name %>" src="images/<%= member.name.toLowerCase() %>-shape.png" />
+                <a title="<%= member.name %>">
+                    <img id="<%= member.name %>" src="images/<%= member.name.toLowerCase() %>-shape.png" />
+                </a>
             <% }); %>
         </div>
     </script>
@@ -218,14 +220,22 @@
     <script type="text/html" id="trainerChecklist-view">
         <div class="inner-view">
             <h2 class="tooltip" 
-                help="List of trainers to visit and which party members to train when you get 
-                there.">
+                help="List of trainers to visit, who to train when you get there, and how much gold
+                to take.">
                 Trainer Checklist
             </h2>
             <% if(_.size(checklist) > 0) { %>
+            <p>Total Training Cost: <%= trainingCost.total %></p>
                 <dl>
                 <% _.each(checklist, function(member, trainer) { %>
-                    <dt><%= trainer %></dt>
+                    <dt>
+                        <a title="List of party members to train with <%= trainer %>.">
+                            <%= trainer %>
+                        </a>
+                        <a title="Total cost to train at this stop.">
+                            <span class="light">Cost: <%= trainingCost[trainer] %></span>
+                        </a>
+                    </dt>
                     <% _.each(member, function(times, name) {
                            if(times === 1) { %>
                                <dd><%= name %></dd>

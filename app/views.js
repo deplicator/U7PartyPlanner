@@ -244,7 +244,7 @@ var ParentView = Backbone.View.extend({
         this.member.undelegateEvents();
         this.selectTrainer.undelegateEvents();
         this.member = new MemberView({model: Avatar});
-        this.selectTrainer = new TrainerSelectView({model: Avatar});
+        this.selectTrainer = new SelectTrainerView({model: Avatar});
         this.member.render();
         this.selectTrainer.render();
         $('#chooseMember').find('select').val('Avatar');

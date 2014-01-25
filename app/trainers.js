@@ -17,7 +17,7 @@ var trainerData = [
         "id": 2,
         "name": "Chad",
         "location": "Moonglow (far South)",
-        "x": 0735,
+        "x": 2736,
         "y": 1839,
         "cost": 45,
         "train": 3,
@@ -253,5 +253,6 @@ var trainerData = [
     }
 ]
 
-trainers = new Trainers();
+var trainers = new Trainers();
+var trainersSelected = new TrainersSelected();
 trainers.add(trainerData);

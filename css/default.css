@@ -133,10 +133,8 @@ dl {
 .btn {
     box-shadow: 1px 1px 2px #000;
     clear: left;
-    float: left;
     margin: 1.125em;
     outline: none;
-    width: 50px;
 }
 
 /** Default Buttons **/
@@ -228,6 +226,10 @@ dl {
 #member .portrait {
     float: left;
     width: 5.25em;
+}
+
+#member #reset {
+    float: left;
 }
 
 #member .statbox {

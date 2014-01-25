@@ -13,12 +13,12 @@
     <div id="wrapper">
         <div id="notfooter">
             <h1><img src="images/ultima-7.png" alt="Ultima VII"><span>Party Planner</span></h1>
-            <div if="left" class="grid half">
+            <div id="left" class="grid half">
                 <div id="chooseMember">
                     <div class="inner-view">
                         <h2 class="tooltip" 
-                            help="Selecting a party member will add them to your party. They can be dismissed by
-                            right clicking on them in the 'Current Party' box below.">
+                            help="Selecting a party member will add them to your party. They can be 
+                            dismissed by right clicking on them in the 'Current Party' box below.">
                             Choose Party Member:
                         </h2>
                         <select>
@@ -42,7 +42,18 @@
             
             <div id="right" class="grid half">
                 <div id="selectTrainer"></div>
-                <div id="map"></div>
+                <div id="map">
+                    <div class="inner-view">
+                        <h2 class="tooltip" help="Where to go.">
+                            Map
+                        </h2>
+                        <div id="locater">
+                            <img id="mapimg" src="images/map-cloth.png" alt="map" />
+                            <canvas id="dots" />
+                        </div>
+                        <input type="button" id="swapMap" class="btn btn-green" value="Switch Map" />
+                    </div>
+                </div>
             </div>
         </div>
         <footer>
@@ -54,8 +65,11 @@
     
     <script type="text/html" id="member-view">
         <div class="inner-view">
-            <img class="portrait" src="images/<%= character.get("name").toLowerCase() %>.png" alt="<%= character.get("name") %>" />
-            <a title="Reset this character back to start values."><input type="reset" id="reset" class="btn btn-red tooltil" /></a>
+            <img class="portrait" src="images/<%= character.get("name").toLowerCase() %>.png" 
+            alt="<%= character.get("name") %>" />
+            <a title="Reset this character back to start values.">
+                <input type="reset" id="reset" class="btn btn-red tooltil" />
+            </a>
             <div class="statbox">
                 <div class="stat">
                     <label>Strength:</label>
@@ -247,18 +261,6 @@
                 <% }); %>
                 </dl>
             <% } %>
-        </div>
-    </script>
-    
-    <script type="text/html" id="map-view">
-        <div class="inner-view">
-            <h2 class="tooltip" help="Where to go.">
-                Map
-            </h2>
-            <div id="locater">
-                <img src="images/map.png" />
-                <canvas id="dots" />
-            </div>
         </div>
     </script>
     

@@ -177,30 +177,62 @@ var MapView = Backbone.View.extend({
         this.on('all', function(e) {
             console.log('Map View: ' + e);
         });
+        this.listenTo(trainersSelected, 'all', this.render);
     },
     render: function() {
-        var template = _.template($("#map-view").html());
-        this.$el.html(template);
-    },
-    canvas: function() {
-        return document.getElementById('dots');
-    },
-    context: function() {
-        this.canvas().height = $('#locater').height();
-        this.canvas().width = $('#locater').width();
-        return this.canvas().getContext('2d');
-    },
-    mapTrainer: function(centerX, centerY) {
+        var self = this;
         
-        radius = 5;
+        // On render resize canvas to match map image.
+        var canvas = document.getElementById('dots')
+        canvas.height = $('#locater').height();
+        canvas.width = $('#locater').width();
+        
+        // Get canvas.
+        var ctx = document.getElementById('dots').getContext("2d");
+        
+        // Create a dot model for each model in trainerSelected collection.
+        trainersSelected.each(function(model) {
+            view = new DotView({ctx: ctx, model: model});
+            view.render();
+        })
+        
+        var doit;
+        $(window).resize(function(){
+            clearTimeout(doit);
+            doit = setTimeout(self.callRecalcLocation, 500);
+        });
+    },
+    events: {
+        'click #swapMap': 'swapMap'
+    },
+    swapMap: function() {
+        if($('#mapimg').attr('src') === 'images/map-cloth.png') {
+            $('#mapimg').attr('src', 'images/map-real.png');
+        } else {
+            $('#mapimg').attr('src', 'images/map-cloth.png');
+        }
+    },
+    callRecalcLocation: function() {
+        trainersSelected.recalcLocation();
+        console.log('oh come on');
+    }
+});
 
-        this.context().beginPath();
-        this.context().arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        this.context().fillStyle = 'red';
-        this.context().fill();
-        this.context().lineWidth = 1;
-        this.context().strokeStyle = '#003300';
-        this.context().stroke();
+var DotView = Backbone.View.extend({
+    initialize: function (e) {
+        this.ctx = e.ctx;
+    },
+    render : function() {
+        var model = this.model;
+        //trainersSelected.moreDots(_.keys(party.checklist));
+        ctx = this.ctx;
+        ctx.beginPath();
+        ctx.arc(model.get("centerX"), model.get("centerY"), model.get("radius"), model.get("startAngle"), model.get("endAngle"), false);
+        ctx.fillStyle = model.get('color');
+        ctx.fill();
+        ctx.lineWidth = model.get('borderWidth');
+        ctx.strokeStyle = model.get('border');
+        ctx.stroke();
     }
 });
 
@@ -219,9 +251,10 @@ var ParentView = Backbone.View.extend({
         this.map = new MapView();
 
         // Listeners
-        this.listenTo(this.chooseMember, "memberChange", this.memberChange);
-        this.listenTo(this.currentParty, "memberChange", this.memberChange);
-        this.listenTo(this.currentParty, "memberRemove", this.memberRemove);
+        this.listenTo(this.chooseMember, 'memberChange', this.memberChange);
+        this.listenTo(this.currentParty, 'memberChange', this.memberChange);
+        this.listenTo(this.currentParty, 'memberRemove', this.memberRemove);
+        $(window).resize(this.map.render);
     },
     render: function() {
         this.member.render();

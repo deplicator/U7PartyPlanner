@@ -411,7 +411,7 @@ var Party = Backbone.Collection.extend({
     createChecklist: function() {
         /**
          * Creates the checklist based on current party members and who they have been selected to 
-         * train with. Seems horribly inefficient, but it is simple and works.
+         * train with. Seems horribly inefficient, but it works.
          *
          * [TODO] Account for training order. See comment block in PartyMember model under the 
          * rollBackStatsHistory method about why training order is important.
@@ -421,6 +421,7 @@ var Party = Backbone.Collection.extend({
             _.each(_.omit(model.get('statHistory'), '0'), function (item, i) {
                 if(!temp[item.trainer]) {
                     temp[item.trainer] = {};
+                    trainersSelected.add({ centerX: 50,centerY: 50 })
                 }
                 if(!temp[item.trainer][model.get('name')]) {
                     temp[item.trainer][model.get('name')] = 1;
@@ -430,6 +431,7 @@ var Party = Backbone.Collection.extend({
             });
         });
         this.checklist = temp;
+        this.trigger('trainerDots', _.keys(temp));
     },
     trainingCostPerTrainer: function(trainer) {
         /**
@@ -510,7 +512,58 @@ var Trainers = Backbone.Collection.extend({
     }
 });
 
+var TrainerDot = Backbone.Model.extend({
+    /**
+     * Model to create a dot on a canvas. Used to show trainer locations on the map.
+     */
+    defaults: {
+        centerX: 0,
+        centerY: 0,
+        radius: 5,
+        startAngle: 0,
+        endAngle: 6.283185307179586, //Tau
+        color: '#FF0000',
+        border: '#0000FF',
+        borderWidth: 2
+    }
+});
 
+var TrainersSelected = Backbone.Collection.extend({
+    /**
+     * Collection of trainer's selected for training. Used to show trainer locations on the map.
+     */
+    model: TrainerDot,
+    initialize: function() {
+    
+        // Listen for custom trigger in party collection's createChecklist method.
+        this.listenTo(party, 'trainerDots', this.moreDots);
+    },
+    moreDots: function(who) {
+        /**
+         * Add a TrainerDot model to this collection for each trainer found in the party collection
+         * trainer checklist (say that three times fast).
+         */
+        var self = this;
+        self.reset();
+        _.each(who, function(trainer) {
+            var temp = trainers.getByName(trainer);
+            var x = (temp[0].get('x') / 3071) * $('#locater').width();
+            var y = (temp[0].get('y') / 3071) * $('#locater').height();
+            self.add({name: trainer, centerX: x, centerY: y});
+        });
+    },
+    recalcLocation: function() {
+        var self = this;
+        _.each(self.models, function(model) {
+            var originalX = trainers.getByName(model.get('name'))[0].get('x');
+            var originalY = trainers.getByName(model.get('name'))[0].get('y');
+            var x = (originalX / 3071) * $('#locater').width();
+            var y = (originalY / 3071) * $('#locater').height();
+            model.set('centerX', x);
+            model.set('centerY', y);
+        });
+    }
+});
 
 
 

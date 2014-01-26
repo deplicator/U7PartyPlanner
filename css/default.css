@@ -420,11 +420,14 @@ text-align: center;
 }
 
 footer {
+    background: #3B2DE4;
+    border-radius: .75em;
     color: #DFDFDF;
     text-align: center;
 }
 
-footer a:link {
+footer a:link,
+footer a:visited {
     color: #DFDFDF;
     text-decoration: none;
 }

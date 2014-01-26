@@ -13,9 +13,9 @@ There are known bugs/unimplemented features/unintuitive interface glitches but I
 you have an opinion from the perspective of an Ultima fan or fellow coder please let me know (I need
 all the help I can get).
 
-[Source](http://github.com/deplicator/u7partyplanner)
-[Demo](http://geekwagon.net/projects/u7pp)
-[Blog Post](http://blog.geekwagon.net/ultima_vii_party_planner)
+[Source](https://github.com/deplicator/U7PartyPlanner)  
+[Demo](http://geekwagon.net/projects/u7pp)  
+[Blog Post](http://blog.geekwagon.net/2014/01/ultima-vii-party-planner.html)  
 
 How to Use
 ----------
@@ -60,6 +60,7 @@ Potential Future Improvements
 * Save to local storage
 * Keep Select Trainers table sorted after clicking
 * Animated map dots
+* Update manual party member stat changes in stat change history
 
 References
 ----------

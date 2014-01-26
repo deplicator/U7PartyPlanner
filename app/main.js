@@ -8,11 +8,11 @@ $(document).ready(function() {
     app.render();
     
     // Because games!
-    var easter_egg = new Konami();
-    easter_egg.code = function() {
+    var because = new Konami();
+    because.code = function() {
         $('body').css('font-family', 'Britannian Runes');
         $('h1').css('font-family', 'Ophidean Runes');
         $('h2').css('font-family', 'Ophidean Runes');
     }
-    easter_egg.load();
+    because.load();
 });

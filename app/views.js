@@ -160,23 +160,49 @@ var SelectTrainerView = Backbone.View.extend({
 var TrainerChecklistView = Backbone.View.extend({
     el: "#trainerChecklist",
     initialize: function(){
+        
+        // Updates this view when party collection changes.
         this.listenTo(party, 'change remove', this.render);
     },
     render: function(){
         var template = _.template($("#trainerChecklist-view").html(), {checklist: party.checklist,
                                                                        trainingCost: party.trainingCost });
         this.$el.html(template);
+    },
+    events: {
+        'mouseenter dt': 'highlightMap',
+        'mouseleave dt': 'unhighlightMap'
+    },
+    highlightMap: function(e) {
+        /**
+         * Changes color attribute of selectedTrainer model that matches element hovered over in
+         * checklist. Doesn't work well when the mouse is moving over the trainer names fast.
+         */
+        $('#' + e.target.id).addClass('hovering');
+        var sl = e.target.id.split('-on')[0];
+        var newDot = trainersSelected.getByName(sl);
+        newDot[0].set('color', '#ffffff');
+        this.trigger('mapRefresh');
+    },
+    unhighlightMap: function(e) {
+        /**
+         * Changes color attribute of selectedTrainer model back to original.
+         */
+        $('#' + e.target.id).removeClass('hovering');
+        var sl = e.target.id.split('-on')[0];
+        var newDot = trainersSelected.getByName(sl);
+        newDot[0].set('color', '#ff0000');
+        this.trigger('mapRefresh');
     }
 });
 
 var MapView = Backbone.View.extend({
-    //this may help 
-    //http://stackoverflow.com/questions/10716478/making-a-backbone-js-view-to-draw-objects-on-a-canvas
+    /**
+     * Resizes canvas to fit map image, also allows the user to swap between the pretty cloth map
+     * and the accurate game map.
+     */
     el: "#map",
     initialize: function(){
-        this.on('all', function(e) {
-            console.log('Map View: ' + e);
-        });
         this.listenTo(trainersSelected, 'all', this.render);
     },
     render: function() {
@@ -192,10 +218,11 @@ var MapView = Backbone.View.extend({
         
         // Create a dot model for each model in trainerSelected collection.
         trainersSelected.each(function(model) {
-            view = new DotView({ctx: ctx, model: model});
+            var view = new DotView({ctx: ctx, model: model});
             view.render();
         })
         
+        // Redraws trainer's dot after a map resize, otherwise they will show in the wrong location.
         var doit;
         $(window).resize(function(){
             clearTimeout(doit);
@@ -206,6 +233,9 @@ var MapView = Backbone.View.extend({
         'click #swapMap': 'swapMap'
     },
     swapMap: function() {
+        /**
+         * Let's swap button changed between pretty map and useful map.
+         */
         if($('#mapimg').attr('src') === 'images/map-cloth.png') {
             $('#mapimg').attr('src', 'images/map-real.png');
         } else {
@@ -213,18 +243,29 @@ var MapView = Backbone.View.extend({
         }
     },
     callRecalcLocation: function() {
+        /**
+         * Calls method in selected trainer's collection that recalculates their x-y coordinates.
+         */
         trainersSelected.recalcLocation();
-        console.log('oh come on');
     }
 });
 
 var DotView = Backbone.View.extend({
+    /**
+     * Trainers x and y coordinates were taken from in game, so they do not line up well with the 
+     * cloth map. They may not be perfect on the game map because of how the coordinates have to be 
+     * changed from the game version to something that fits on the map. Regardless, it worked out 
+     * closer than I expected.
+     */
     initialize: function (e) {
+        
+        // This made it work.
         this.ctx = e.ctx;
     },
     render : function() {
+        
+        // Draws dots based on attributes in Dot model.
         var model = this.model;
-        //trainersSelected.moreDots(_.keys(party.checklist));
         ctx = this.ctx;
         ctx.beginPath();
         ctx.arc(model.get("centerX"), model.get("centerY"), model.get("radius"), model.get("startAngle"), model.get("endAngle"), false);
@@ -239,7 +280,7 @@ var DotView = Backbone.View.extend({
 
 // Parent View starts app.
 var ParentView = Backbone.View.extend({
-    el: '#notfooter',
+    el: '#wrapper',
     initialize: function() {
 
         // Views
@@ -254,6 +295,7 @@ var ParentView = Backbone.View.extend({
         this.listenTo(this.chooseMember, 'memberChange', this.memberChange);
         this.listenTo(this.currentParty, 'memberChange', this.memberChange);
         this.listenTo(this.currentParty, 'memberRemove', this.memberRemove);
+        this.listenTo(this.trainerChecklist, 'mapRefresh', this.map.render);
         $(window).resize(this.map.render);
     },
     render: function() {

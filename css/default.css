@@ -40,10 +40,10 @@
 
 html {
     background: url(../images/u7background.jpg) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
     background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
     font: normal normal 400 1em 'Doppio One', sans-serif;
     height: 100%;
     margin: 0;
@@ -57,28 +57,22 @@ body {
 }
 
 h1 {
-    color: #FFEF00;
+    color: #D7FFFD;
     font-size: 3em;
     font-family: "Comic Sans MS", cursive, sans-serif; /* how could you? */
     font-weight: 400;
     margin: 0;
-    text-shadow: -1px -1px 0 #000, 1px -1px 0 #272727, -1px 1px 0 #353535, 1px 1px 0 #252525;
-    position: relative;
-    height: 1.5em;
+    text-align: center;
+    text-shadow: -1px -1px 0 #272727, 1px -1px 0 #272727, -1px 1px 0 #272727, 1px 1px 0 #272727;
 }
 
 h1 img {
-    position: absolute;
-    height: 1em;
-    z-index: 0;
-    margin: 0.45em 0 0 1em;
+    height: 1.5em;
 }
 
-h1 span {
-    position: absolute;
-    z-index: 1;
-    margin: .15em 0 0 0;
-    left: 7em;
+h1 div {
+    font-size: 0.75em;
+    margin: -1em 0 0 0;
 }
 
 h2 {
@@ -86,12 +80,7 @@ h2 {
     font: 1.75em 'Cloister Black', serif;
     margin: 0;
     position: relative;
-    text-shadow: 0.0625em 0.0625em #000;
-}
-
-
-dl {
-    background: white;
+    text-shadow: 0.0625em 0.0625em #272727;
 }
 
 /* https://developer.mozilla.org/en-US/docs/Web/CSS/::after */
@@ -102,12 +91,14 @@ dl {
     color: #181818;
     content: attr(help);
     font: 0.5em san-serif;
+    left: 9em;
+    padding: .25em;
     position: absolute;
+    text-align: left;
     text-shadow: none;
+    top: 2.5em;
     width: 15em;
     z-index: 10;
-    text-align: left;
-    padding: .25em;
 }
 
 .grid {
@@ -436,11 +427,15 @@ text-align: center;
 }
 
 footer {
-    background: rgba(0, 0, 0, 0.6);
-    border-top-left-radius: 0.75em;
-    border-top-right-radius: 0.75em;
-    color: #fefefe;
-    height: 50px;
-    padding: .125em;
-    font-family: "Britannian Runes";
+    color: #DFDFDF;
+    text-align: center;
+}
+
+footer a:link {
+    color: #DFDFDF;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }

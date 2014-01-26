@@ -12,7 +12,7 @@ var PartyMember = Backbone.Model.extend({
         this.on('change:strength', this.calcHits, this);
         this.on('change:dexterity', this.calcCombat, this);
         //The link between Intelligence and Magic is indicated in the manual, but not in the game.
-        //this.on('change:intelligence', this.calcMagic, this);
+        this.on('change:intelligence', this.calcMagic, this);
         this.on('change:magic', this.calcMana, this);
         this.on('change:level', this.calcTraining, this);
         this.on('change:level', this.calcLevel('exp'), this);
@@ -182,10 +182,7 @@ var PartyMember = Backbone.Model.extend({
         /**
          * Mana is always equal to magic. Whether you like it or not!
          */
-        var oldMagic = this.previous('magic');
-        var newMagic = this.get('magic');
-        var difference = newMagic - oldMagic;
-        this.set('mana', this.get('mana') + difference);
+        this.set('mana', this.get('magic'));
     },
     rangeCheck: function(attribute) {
         /**
@@ -296,12 +293,12 @@ var PartyMember = Backbone.Model.extend({
             
             // Reset stats.
             if(trainer === self.get('statHistory')[i].trainer) {
-                self.set('strength', self.get('statHistory')[i - 1].strength, {silent: true});
-                self.set('dexterity', self.get('statHistory')[i - 1].dexterity, {silent: true});
-                self.set('intelligence', self.get('statHistory')[i - 1].intelligence, {silent: true});
-                self.set('combat', self.get('statHistory')[i - 1].combat, {silent: true});
-                self.set('magic', self.get('statHistory')[i - 1].magic, {silent: true});
-                self.set('trainingCount', i, {silent: true});
+                self.set('strength', self.get('statHistory')[i - 1].strength);
+                self.set('dexterity', self.get('statHistory')[i - 1].dexterity);
+                self.set('intelligence', self.get('statHistory')[i - 1].intelligence);
+                self.set('combat', self.get('statHistory')[i - 1].combat);
+                self.set('magic', self.get('statHistory')[i - 1].magic);
+                self.set('trainingCount', i);
                 for(var j = i; j <= trains; j++) {
                     self.set('statHistory', _.omit(self.get('statHistory'), j.toString()), {silent: true});
                 }
@@ -333,10 +330,10 @@ var PartyMember = Backbone.Model.extend({
         // Left mouse click trains.
         if(button === 0) {
             if(self.get('training') >= trainer.get('train')) {
-                self.set('training', self.get('training') - trainer.get('train'), {silent: true});
-                self.set('strength', self.get('strength') + trainer.get('strength'), {silent: true});
-                self.set('dexterity', self.get('dexterity') + trainer.get('dexterity'), {silent: true});
-                self.set('intelligence', self.get('intelligence') + trainer.get('intelligence'), {silent: true});
+                self.set('training', self.get('training') - trainer.get('train'));
+                self.set('strength', self.get('strength') + trainer.get('strength'));
+                self.set('dexterity', self.get('dexterity') + trainer.get('dexterity'));
+                self.set('intelligence', self.get('intelligence') + trainer.get('intelligence'));
                 
                 //Rubber band effect needs to be tested, is this site right? if it is I need some tweaks
                 //http://geocities.bootstrike.com/Ultima%20Thule!/u7train.html
@@ -346,7 +343,7 @@ var PartyMember = Backbone.Model.extend({
                     var low = Math.min(self.get('dexterity'), self.get('combat'));
                     var rubberband = Math.ceil((high -  low) / 2);
                     if(rubberband === 0) { rubberband = 1; }
-                    self.set('combat', self.get('combat') + rubberband, {silent: true});
+                    self.set('combat', self.get('combat') + rubberband);
                 }
                 
                 // Deal with rubber band effect for magic.
@@ -355,7 +352,7 @@ var PartyMember = Backbone.Model.extend({
                     var low = Math.min(self.get('intelligence'), self.get('magic'));
                     var rubberband = Math.ceil((high -  low) / 2);
                     if(rubberband === 0) { rubberband = 1; }
-                    self.set('magic', self.get('magic') + rubberband, {silent: true});
+                    self.set('magic', self.get('magic') + rubberband);
                 }
                 
                 // Add trainer to statHistory.
@@ -537,6 +534,16 @@ var TrainersSelected = Backbone.Collection.extend({
     
         // Listen for custom trigger in party collection's createChecklist method.
         this.listenTo(party, 'trainerDots', this.moreDots);
+    },
+    getByName: function(name){
+        /** 
+         * Clearly I refuse to use id's.
+         * 
+         * @param name string  Trainer name is case sensitive.
+         */
+        return this.filter(function(member) {
+            return member.get('name') === name;
+        });
     },
     moreDots: function(who) {
         /**

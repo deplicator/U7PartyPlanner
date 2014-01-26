@@ -11,56 +11,55 @@
 </head>
 <body>
     <div id="wrapper">
-        <div id="notfooter">
-            <h1><img src="images/ultima-7.png" alt="Ultima VII"><span>Party Planner</span></h1>
-            <div id="left" class="grid half">
-                <div id="chooseMember">
-                    <div class="inner-view">
-                        <h2 class="tooltip" 
-                            help="Selecting a party member will add them to your party. They can be 
-                            dismissed by right clicking on them in the 'Current Party' box below.">
-                            Choose Party Member:
-                        </h2>
-                        <select>
-                            <option value="Avatar" selected>Avatar</option>
-                            <option value="Dupre">Dupre</option>
-                            <option value="Iolo">Iolo</option>
-                            <option value="Jaana">Jaana</option>
-                            <option value="Julia">Julia</option>
-                            <option value="Katrina">Katrina</option>
-                            <option value="Sentri">Sentri</option>
-                            <option value="Shamino">Shamino</option>
-                            <option value="Spark">Spark</option>
-                            <option value="Tseramed">Tseramed</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="member"></div>
-                <div id="currentParty"></div>
-                <div id="trainerChecklist"></div>
-            </div>
-            
-            <div id="right" class="grid half">
-                <div id="selectTrainer"></div>
-                <div id="map">
-                    <div class="inner-view">
-                        <h2 class="tooltip" help="Where to go.">
-                            Map
-                        </h2>
-                        <div id="locater">
-                            <img id="mapimg" src="images/map-cloth.png" alt="map" />
-                            <canvas id="dots" />
-                        </div>
-                        <input type="button" id="swapMap" class="btn btn-green" value="Switch Map" />
-                    </div>
+        <h1><img src="images/ultima-7.png" alt="Ultima VII"><div>Party Planner</div></h1>
+        <div id="left" class="grid half">
+            <div id="chooseMember">
+                <div class="inner-view">
+                    <h2 class="tooltip" 
+                        help="Selecting a party member will add them to your party. They can be 
+                        dismissed by right clicking on them in the 'Current Party' box below.">
+                        Choose Party Member:
+                    </h2>
+                    <select>
+                        <option value="Avatar" selected>Avatar</option>
+                        <option value="Dupre">Dupre</option>
+                        <option value="Iolo">Iolo</option>
+                        <option value="Jaana">Jaana</option>
+                        <option value="Julia">Julia</option>
+                        <option value="Katrina">Katrina</option>
+                        <option value="Sentri">Sentri</option>
+                        <option value="Shamino">Shamino</option>
+                        <option value="Spark">Spark</option>
+                        <option value="Tseramed">Tseramed</option>
+                    </select>
                 </div>
             </div>
+            <div id="member"></div>
+            <div id="currentParty"></div>
+            <div id="trainerChecklist"></div>
         </div>
-        <footer>
-            <a href="#">About</a>
-            <a href="#">Source</a>
-            <a href="#">Credits</a>
-        </footer>
+        
+        <div id="right" class="grid half">
+            <div id="selectTrainer"></div>
+            <div id="map">
+                <div class="inner-view">
+                    <h2 class="tooltip" help="Where to go.">
+                        Map
+                    </h2>
+                    <div id="locater">
+                        <img id="mapimg" src="images/map-cloth.png" alt="map" />
+                        <canvas id="dots" />
+                    </div>
+                    <input type="button" id="swapMap" class="btn btn-green" value="Switch Map" />
+                </div>
+            </div>
+            <footer>
+                <div class="inner-view">
+                    <a href="#">Source</a> | 
+                    <a href="#">About</a>
+                </div>
+            </footer>
+        </div>
     </div>
     
     <script type="text/html" id="member-view">
@@ -242,7 +241,7 @@
             <p>Total Training Cost: <%= trainingCost.total %></p>
                 <dl>
                 <% _.each(checklist, function(member, trainer) { %>
-                    <dt>
+                    <dt id="<%= trainer %>-onChecklist" >
                         <a title="List of party members to train with <%= trainer %>.">
                             <%= trainer %>
                         </a>

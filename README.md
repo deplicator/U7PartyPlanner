@@ -13,6 +13,10 @@ There are known bugs/unimplemented features/unintuitive interface glitches but I
 you have an opinion from the perspective of an Ultima fan or fellow coder please let me know (I need
 all the help I can get).
 
+[Source](http://github.com/deplicator/u7partyplanner)
+[Demo](http://geekwagon.net/projects/u7pp)
+[Blog Post](http://blog.geekwagon.net/ultima_vii_party_planner)
+
 How to Use
 ----------
 ### Choose Party Member
@@ -47,11 +51,17 @@ trainer is provided next to the trainer's name. Total cost of all training is at
 not yet account for nuances in training order, so keep that in mind.
 
 ###Map
-A dot on the map depicts the location of a trainer on the checklist. Hover over the dot or trainer
-name to see which dots correlate to which trainer.
+A dot on the map depicts the location of a trainer on the checklist. Hover the trainer name in the
+checklist to see which dots correlate to which trainer.
 
+Potential Future Improvements
+-----------------------------
+* Mobile friendly
+* Save to local storage
+* Keep Select Trainers table sorted after clicking
+* Animated map dots
 
-references
+References
 ----------
 [Starting stats for all party members.](http://infinitron.nullneuron.net/u7char.html)  
 [Trainer's stats and explination of 'rubberband effect'.](http://strategywiki.org/wiki/Ultima_VII:_The_Black_Gate/Trainers)  

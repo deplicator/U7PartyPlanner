@@ -8,11 +8,11 @@ var PartyMember = Backbone.Model.extend({
         this.initialStats = _.clone(this.attributes);
         this.updateStatHistory('initial', _.clone(this.attributes));
         
-        // Listeners
+        // Listen to stat changes
         this.on('change:strength', this.calcHits, this);
         this.on('change:dexterity', this.calcCombat, this);
         //The link between Intelligence and Magic is indicated in the manual, but not in the game.
-        this.on('change:intelligence', this.calcMagic, this);
+        //this.on('change:intelligence', this.calcMagic, this);
         this.on('change:magic', this.calcMana, this);
         this.on('change:level', this.calcTraining, this);
         this.on('change:level', this.calcLevel('exp'), this);
@@ -171,7 +171,7 @@ var PartyMember = Backbone.Model.extend({
     },
     calcMagic: function() {
         /**
-         * Magic is linked to intelligence changes.
+         * Magic is linked to intelligence changes (listener commented out).
          */
         var oldIntelligence = this.previous('intelligence');
         var newIntelligence = this.get('intelligence');
@@ -270,15 +270,7 @@ var PartyMember = Backbone.Model.extend({
     },
     rollBackStatHistory: function(trainer) {
     /**
-     * Because of the rubberband effect, training order becomes important. For example, is Spark
-     * trains with Markus, it only cost 1 training point but Spark's combat moves up 6 (10 to 16).
-     * This happens because Sparks dexterity is much higher than his combat and these stats are 
-     * linked. On the other hand, if Spark were to train with Karenna first, then Markus, his combat
-     * increase is 8 from Karenna, then 3 from Markus. To solve the untraining problem, the party
-     * member model saves stat history. When untraining, stat history is rolled back. If the user
-     * untrains with a previous trainer, subsequent training must also be undone. Using the previous
-     * example, after training with Karenna and Markus, if the user untrains with Karenna they will
-     * also be untrained with Markus.
+     * Because of the rubberband effect, it is easier to undo in the same order training was done.
      * 
      * @param trainer string    Most recent trainer.
      */
@@ -409,9 +401,6 @@ var Party = Backbone.Collection.extend({
         /**
          * Creates the checklist based on current party members and who they have been selected to 
          * train with. Seems horribly inefficient, but it works.
-         *
-         * [TODO] Account for training order. See comment block in PartyMember model under the 
-         * rollBackStatsHistory method about why training order is important.
          */
         temp = {};
         _.each(this.models, function (model) {

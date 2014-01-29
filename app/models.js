@@ -304,9 +304,7 @@ var PartyMember = Backbone.Model.extend({
     trainWith: function(id, button, trained) {
     /**
      * Updates party member model with trainer's information. Should be equivalent to training in
-     * the game. The rubberband effect is calculated as half the absolute value of the difference
-     * between the primary and secondary stat rounded up (or something close to that). Referenced 
-     * from http://strategywiki.org/wiki/Ultima_VII:_The_Black_Gate/Trainers.
+     * the game. Referenced from http://strategywiki.org/wiki/Ultima_VII:_The_Black_Gate/Trainers.
      *
      * Needs more in game testing with rubberband effect. With 10 potential party members, 18
      * trainers, uncertain number of training points, and training order a factor: there are a lot 

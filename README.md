@@ -15,7 +15,7 @@ all the help I can get).
 
 [Source](https://github.com/deplicator/U7PartyPlanner)  
 [Demo](http://geekwagon.net/projects/u7pp)  
-[Blog Post](http://blog.geekwagon.net/2014/01/ultima-vii-party-planner.html)  
+[Blog Post](http://geekwagon.net/index.php/2014/ultima-vii-party-planner/)  
 
 How to Use
 ----------
